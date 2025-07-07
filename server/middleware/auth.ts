@@ -28,7 +28,7 @@ export const authenticateToken = async (
 
     const decoded = jwt.verify(token, JWT_SECRET) as any;
     req.user = {
-      id: decoded.id,
+      id: decoded.id || decoded.userId,  // Handle both 'id' and 'userId' for compatibility
       email: decoded.email,
       userType: decoded.userType,
       role: decoded.role
