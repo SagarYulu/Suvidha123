@@ -40,9 +40,32 @@ const DashboardContent = () => {
     return formatConsistentIssueData(recentIssues);
   }, [recentIssues]);
 
-  // Run auth diagnostics on mount
+  // Check for JWT errors on mount
   React.useEffect(() => {
-    AuthDebugger.runFullDiagnostics();
+    // Check if we're getting 403 errors
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/issues', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.status === 403) {
+          console.log('⚠️ JWT authentication failed, clearing old tokens...');
+          // Clear all auth data
+          localStorage.clear();
+          sessionStorage.clear();
+          // Redirect to login
+          window.location.href = '/';
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+      }
+    };
+    
+    checkAuth();
   }, []);
 
   // Test JWT Authentication

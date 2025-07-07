@@ -32,7 +32,7 @@ const RecentTicketsTable = memo(({ recentIssues, isLoading }: RecentTicketsTable
   // Fetch employee names when issues change
   useEffect(() => {
     const fetchEmployeeNames = async () => {
-      if (recentIssues.length === 0) return;
+      if (!recentIssues || recentIssues.length === 0) return;
       
       console.log("Starting to fetch employee names for issues:", recentIssues);
       

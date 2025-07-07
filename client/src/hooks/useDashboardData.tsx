@@ -82,6 +82,10 @@ export const useDashboardData = () => {
   
   // Memoize these calculations to prevent recalculations on re-renders
   const recentIssues = useMemo(() => {
+    // Ensure issues is always an array
+    if (!issues || !Array.isArray(issues)) {
+      return [];
+    }
     const sortedIssues = [...issues].sort((a, b) => 
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
