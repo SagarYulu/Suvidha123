@@ -4,7 +4,7 @@
 ```
 yulu-employee-management/
 │
-├── 📁 client/              ⬅️ FRONTEND (React + TypeScript)
+├── 📁 frontend/            ⬅️ FRONTEND (React + TypeScript)
 │   ├── 📄 index.html         - Entry HTML file
 │   └── 📁 src/               - Source code
 │       ├── 📁 components/    - React components
@@ -49,7 +49,7 @@ yulu-employee-management/
 
 ## Architecture Overview
 
-### 🎨 Frontend (`client/`)
+### 🎨 Frontend (`frontend/`)
 - **Technology**: React 18 + TypeScript + Vite
 - **Styling**: Tailwind CSS + Shadcn/UI
 - **State Management**: React Context API
@@ -65,7 +65,7 @@ yulu-employee-management/
 
 ### 🔗 Communication Flow
 ```
-Frontend (client/) ←→ API Calls ←→ Backend (server/)
+Frontend (frontend/) ←→ API Calls ←→ Backend (server/)
                                          ↓
                                    PostgreSQL DB
 ```
@@ -73,10 +73,10 @@ Frontend (client/) ←→ API Calls ←→ Backend (server/)
 ## Key Features by Folder
 
 ### Frontend Features
-- **Mobile App** (`client/src/pages/mobile/`)
-- **Admin Dashboard** (`client/src/pages/admin/`)
-- **Authentication** (`client/src/contexts/AuthContext.tsx`)
-- **Real-time Updates** (`client/src/services/websocketService.ts`)
+- **Mobile App** (`frontend/src/pages/mobile/`)
+- **Admin Dashboard** (`frontend/src/pages/admin/`)
+- **Authentication** (`frontend/src/contexts/AuthContext.tsx`)
+- **Real-time Updates** (`frontend/src/services/websocketService.ts`)
 
 ### Backend Features
 - **Authentication API** (`server/routes/authRoutes.ts`)
