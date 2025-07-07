@@ -52,6 +52,11 @@ export interface IssueComment {
   employeeId: number;
   content: string;
   createdAt: string;
+  updatedAt?: string;
+  commenterName?: string;
+  commenterEmail?: string;
+  commenterRole?: string;
+  isEmployee?: boolean;
 }
 
 export interface AuthState {

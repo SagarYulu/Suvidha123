@@ -61,8 +61,8 @@ const CommentSection = ({
         {comments.length > 0 ? (
           comments.map((comment) => {
             const isCurrentUser = comment.employeeId === parseInt(currentUserId || '0');
-            const isAdmin = comment.employeeId === 1;
-            const userName = commenterNames[comment.employeeId.toString()] || (isAdmin ? "Admin" : "Suvidha");
+            const isAdmin = !comment.isEmployee; // Check if it's an admin/dashboard user
+            const userName = isAdmin ? "Suvidha" : (commenterNames[comment.employeeId.toString()] || comment.commenterName || "Unknown");
             
             return (
               <div 
@@ -81,7 +81,7 @@ const CommentSection = ({
                     }}
                   >
                     {!isCurrentUser && (
-                      <div className="text-xs font-semibold mb-1" style={{ color: isAdmin ? '#075e54' : '#06b6d4' }}>
+                      <div className="text-xs font-semibold mb-1" style={{ color: '#075e54' }}>
                         {userName}
                       </div>
                     )}
