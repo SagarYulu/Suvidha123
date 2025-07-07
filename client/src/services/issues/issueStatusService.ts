@@ -30,7 +30,7 @@ export const updateIssueStatus = async (
 
     // Update the issue status
     try {
-      const response = await authenticatedAxios.patch(`/issues/${issueId}`, {
+      const response = await authenticatedAxios.patch(`/api/issues/${issueId}`, {
         status: newStatus,
         closedAt: newStatus === 'closed' || newStatus === 'resolved' ? new Date().toISOString() : null
       });

@@ -31,7 +31,7 @@ export const updateIssuePriority = async (
 
     // Update the issue priority
     try {
-      await authenticatedAxios.patch(`/issues/${issueId}`, {
+      await authenticatedAxios.patch(`/api/issues/${issueId}`, {
         priority: newPriority,
         lastUpdatedAt: new Date().toISOString()
       });
@@ -102,7 +102,7 @@ export const bulkUpdatePriority = async (
         const previousPriority = currentIssue?.priority;
 
         // Update the issue priority
-        await authenticatedAxios.patch(`/issues/${issueId}`, {
+        await authenticatedAxios.patch(`/api/issues/${issueId}`, {
           priority: newPriority,
           lastUpdatedAt: new Date().toISOString()
         });

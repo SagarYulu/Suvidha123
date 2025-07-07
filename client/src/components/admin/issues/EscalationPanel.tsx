@@ -77,11 +77,11 @@ export const EscalationPanel: React.FC<EscalationPanelProps> = ({
     setIsLoading(true);
     try {
       // Fetch escalation history
-      const historyResponse = await authenticatedAxios.get(`/escalations/${issueId}/history`);
+      const historyResponse = await authenticatedAxios.get(`/api/escalations/${issueId}/history`);
       setEscalationHistory(historyResponse.data.data || []);
 
       // Fetch escalation rules
-      const rulesResponse = await authenticatedAxios.get('/api/escalations/rules');
+      const rulesResponse = await authenticatedAxios.get('/api/api/escalations/rules');
       setEscalationRules(rulesResponse.data.data || []);
     } catch (error) {
       console.error('Error fetching escalation data:', error);
@@ -125,7 +125,7 @@ export const EscalationPanel: React.FC<EscalationPanelProps> = ({
 
     setIsEscalating(true);
     try {
-      const response = await authenticatedAxios.post(`/escalations/${issueId}/escalate`, {
+      const response = await authenticatedAxios.post(`/api/escalations/${issueId}/escalate`, {
         escalation_rule_id: selectedRule,
         reason: escalationReason,
         escalate_to: 'manual'
@@ -146,7 +146,7 @@ export const EscalationPanel: React.FC<EscalationPanelProps> = ({
 
   const handleDeEscalation = async () => {
     try {
-      const response = await authenticatedAxios.post(`/escalations/${issueId}/de-escalate`, {
+      const response = await authenticatedAxios.post(`/api/escalations/${issueId}/de-escalate`, {
         reason: 'Manual de-escalation'
       });
 

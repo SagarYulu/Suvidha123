@@ -45,7 +45,7 @@ export const checkUserRole = async (userId: number, roleName: string): Promise<b
 export const assignRole = async (userId: number, roleName: string): Promise<boolean> => {
   try {
     // First get the role ID by name
-    const rolesResponse = await authenticatedAxios.get('/rbac/roles');
+    const rolesResponse = await authenticatedAxios.get('/api/rbac/roles');
     const roles = rolesResponse.data || [];
     const role = roles.find((r: any) => r.name.toLowerCase() === roleName.toLowerCase());
     
@@ -76,7 +76,7 @@ export const assignRole = async (userId: number, roleName: string): Promise<bool
 export const removeRole = async (userId: number, roleName: string): Promise<boolean> => {
   try {
     // First get the role ID by name
-    const rolesResponse = await authenticatedAxios.get('/rbac/roles');
+    const rolesResponse = await authenticatedAxios.get('/api/rbac/roles');
     const roles = rolesResponse.data || [];
     const role = roles.find((r: any) => r.name.toLowerCase() === roleName.toLowerCase());
     

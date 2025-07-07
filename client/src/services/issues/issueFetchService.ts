@@ -145,7 +145,7 @@ export const getIssuesByUserId = async (userId: string | number): Promise<Issue[
     const isEmployee = authData ? JSON.parse(authData).userType === 'employee' : false;
     
     // Use the appropriate endpoint based on user type
-    const endpoint = isEmployee ? '/issues/my/issues' : `/issues?employeeId=${userId}`;
+    const endpoint = isEmployee ? '/api/issues/my/issues' : `/api/issues?employeeId=${userId}`;
     const response = await authenticatedAxios.get(endpoint);
     const dbIssues = response.data;
     

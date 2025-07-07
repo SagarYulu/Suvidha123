@@ -51,7 +51,7 @@ export const getMultipleFeedbackStatuses = async (issueIds: string[]): Promise<R
   try {
     if (!issueIds.length) return {};
     
-    const response = await authenticatedAxios.post('/ticket-feedback/bulk', { issueIds });
+    const response = await authenticatedAxios.post('/api/ticket-feedback/bulk', { issueIds });
     
     const data = response.data;
     
@@ -97,7 +97,7 @@ export const submitTicketFeedback = async (feedback: TicketFeedback): Promise<bo
     // Get the issue details to capture city, cluster, and agent information
     let issueData: any = null;
     try {
-      const issueResponse = await authenticatedAxios.get(`/issues/${feedback.issue_id}`);
+      const issueResponse = await authenticatedAxios.get(`/api/issues/${feedback.issue_id}`);
       issueData = issueResponse.data;
     } catch (error) {
       console.error("Error fetching issue data:", error);
@@ -150,7 +150,7 @@ export const submitTicketFeedback = async (feedback: TicketFeedback): Promise<bo
     
     console.log("Submitting enriched feedback data:", feedbackData);
     
-    const response = await authenticatedAxios.post('/ticket-feedback', feedbackData);
+    const response = await authenticatedAxios.post('/api/ticket-feedback', feedbackData);
     
     const data = response.data;
     console.log("Feedback submitted successfully:", data);
