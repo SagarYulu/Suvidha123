@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { storage } from '../storage';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-here';
+const JWT_SECRET = process.env.JWT_SECRET || 'FS_Grievance_Management_JWT_Secret_Key_2025_Yulu_Secure_Auth_Token';
 
 export interface AuthRequest extends Request {
   user?: {

@@ -13,7 +13,7 @@ import { authenticateToken, requireDashboardUser, requireEmployee, requirePermis
 import { businessHoursAnalytics } from "./businessHoursAnalytics";
 import { GOVERNMENT_HOLIDAYS_2025 } from "../shared/holidays";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-here";
+const JWT_SECRET = process.env.JWT_SECRET || "FS_Grievance_Management_JWT_Secret_Key_2025_Yulu_Secure_Auth_Token";
 
 // Helper function to validate password (handles both bcrypt and plaintext)
 async function validatePassword(inputPassword: string, storedPassword: string): Promise<boolean> {
