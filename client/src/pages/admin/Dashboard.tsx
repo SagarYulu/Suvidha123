@@ -41,12 +41,38 @@ const DashboardContent = () => {
 
   // Filters are managed by React Query via queryKey dependencies
 
+  // Test JWT Authentication
+  const testAuth = async () => {
+    console.log('Testing JWT Authentication...');
+    try {
+      const response = await fetch('/api/issues', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      console.log('Auth Test Response:', { status: response.status, data });
+      alert(`Auth Test: ${response.status === 200 ? 'SUCCESS' : 'FAILED'} - Status: ${response.status}`);
+    } catch (error) {
+      console.error('Auth Test Error:', error);
+      alert('Auth Test Failed with error');
+    }
+  };
+
   return (
     <AdminLayout title="Dashboard">
       {isLoading && !analytics ? (
         <DashboardLoader />
       ) : (
         <div className="space-y-6">
+          {/* Test Authentication Button */}
+          <button 
+            onClick={testAuth}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Test JWT Auth
+          </button>
           {/* Pass current filters to FilterBar to ensure UI stays in sync */}
           <FilterBar 
             onFilterChange={handleFilterChange} 

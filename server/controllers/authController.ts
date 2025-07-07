@@ -3,9 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { employeeModel } from '../models/Employee';
 import { dashboardUserModel } from '../models/DashboardUser';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'FS_Grievance_Management_JWT_Secret_Key_2025_Yulu_Secure_Auth_Token';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
+import { JWT_SECRET, JWT_EXPIRES_IN } from '../config/jwt';
 
 export class AuthController {
   /**
