@@ -1,4 +1,4 @@
-import { db } from '../db';
+import { db } from '../config/db';
 import { employees } from '@shared/schema';
 import { eq, and, or, like, sql } from 'drizzle-orm';
 import type { Employee, InsertEmployee } from '@shared/schema';

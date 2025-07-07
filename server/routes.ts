@@ -13,6 +13,7 @@ import { authenticateToken, requireDashboardUser, requireEmployee, requirePermis
 import { businessHoursAnalytics } from "./utils/businessHoursAnalytics";
 import { GOVERNMENT_HOLIDAYS_2025 } from "../shared/holidays";
 import { JWT_SECRET } from "./config/jwt";
+import { apiRoutes } from "./routes/index";
 
 // Helper function to validate password (handles both bcrypt and plaintext)
 async function validatePassword(inputPassword: string, storedPassword: string): Promise<boolean> {
@@ -27,6 +28,9 @@ async function validatePassword(inputPassword: string, storedPassword: string): 
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Mount modular API routes
+  app.use('/api', apiRoutes);
+
   // Authentication routes (public - no auth required)
   app.post("/api/auth/login", async (req, res) => {
     try {

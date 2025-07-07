@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { AuthRequest } from './auth';
-import { db } from '../db';
+import { db } from '../config/db';
 
 export const rbacMiddleware = (requiredPermissions: string[]) => {
   return async (req: AuthRequest, res: Response, next: NextFunction) => {

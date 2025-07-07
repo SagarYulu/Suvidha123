@@ -1,4 +1,4 @@
-import { db } from '../db';
+import { db } from '../config/db';
 import { issues, issueComments, issueInternalComments, ticketFeedback, issueAuditTrail } from '@shared/schema';
 import { eq, and, or, desc, sql, between } from 'drizzle-orm';
 import type { Issue, InsertIssue, IssueComment, InsertIssueComment } from '@shared/schema';

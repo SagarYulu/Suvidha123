@@ -382,8 +382,18 @@ const Settings = () => {
   // Holidays functions
   const loadHolidays = async () => {
     setIsHolidayLoading(true);
-    const data = await getHolidays();
-    setHolidays(data);
+    try {
+      const data = await getHolidays();
+      setHolidays(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Error loading holidays:", error);
+      setHolidays([]);
+      toast({
+        title: "Error",
+        description: "Failed to load holidays",
+        variant: "destructive",
+      });
+    }
     setIsHolidayLoading(false);
   };
 

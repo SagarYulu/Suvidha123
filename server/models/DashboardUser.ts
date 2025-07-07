@@ -1,4 +1,4 @@
-import { db } from '../db';
+import { db } from '../config/db';
 import { dashboardUsers } from '@shared/schema';
 import { eq, and, or, like, sql } from 'drizzle-orm';
 import type { DashboardUser, InsertDashboardUser } from '@shared/schema';

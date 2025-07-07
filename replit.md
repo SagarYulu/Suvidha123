@@ -128,6 +128,18 @@ This is a full-stack web application for managing employee issues and feedback i
 
 ## Changelog
 
+- July 08, 2025. Holidays Management Feature Implementation:
+  - **CREATED HOLIDAYS FEATURE**: Built complete holidays management system for accurate SLA tracking
+  - **MVC ARCHITECTURE**: Created Holiday model, controller, and routes following MVC patterns
+  - **DATABASE SCHEMA**: Added holidays table with fields for name, date, type (government/restricted), recurring flag, and description
+  - **API ENDPOINTS**: Implemented full CRUD operations: GET, POST, PUT, DELETE for holidays
+  - **BULK UPLOAD**: Added ability to bulk upload default 2025 Indian holidays
+  - **SETTINGS UI**: Added "Holidays" tab to Settings page with table view and management dialogs
+  - **FIXED IMPORTS**: Resolved MVC restructuring import issues (db paths changed from '../db' to '../config/db')
+  - **API INTEGRATION**: Connected frontend with backend using authenticated axios
+  - **TESTED WORKING**: All holiday operations verified via curl and UI
+  - Ready for integration with business hours calculation utilities
+  
 - July 08, 2025. Complete MVC Architecture Refactoring:
   - **RESTRUCTURED BACKEND**: Organized server code into proper MVC folders
   - **CREATED FOLDER STRUCTURE**: models/, controllers/, routes/, services/, middleware/, config/, utils/
