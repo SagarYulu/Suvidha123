@@ -77,8 +77,8 @@ const Index = () => {
   
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-500 to-teal-400 animate-gradient-xy"></div>
+      {/* Static gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-500"></div>
       
       {/* Floating elements for visual appeal */}
       <div className="absolute inset-0 overflow-hidden">
