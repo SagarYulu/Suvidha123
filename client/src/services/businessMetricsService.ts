@@ -12,7 +12,7 @@ export interface BusinessMetrics {
 
 export const fetchBusinessMetrics = async (): Promise<BusinessMetrics> => {
   try {
-    const response = await authenticatedAxios.get('/analytics/business-metrics');
+    const response = await authenticatedAxios.get('/api/analytics/business-metrics');
     return response.data;
   } catch (error) {
     console.error('Error fetching business metrics:', error);

@@ -82,9 +82,9 @@ export const getAnalytics = async (filters?: IssueFilters) => {
       // Get first comment for each issue to calculate FRT
       for (const issue of issues) {
         try {
-          const response = await authenticatedAxios.get(`/issues/${issue.id}/comments`);
+          const response = await authenticatedAxios.get(`/api/issues/${issue.id}/comments`);
           const comments = response.data;
-          if (comments && comments.length > 0) {
+          if (Array.isArray(comments) && comments.length > 0) {
             issueComments[issue.id] = comments;
           }
         } catch (error) {
@@ -224,18 +224,18 @@ export const getResolutionTimeHistory = async () => {
     // Fetch closed issues from the last 7 days that have closedAt data
     let closedIssues: any[] = [];
     try {
-      const response = await authenticatedAxios.get('/issues');
+      const response = await authenticatedAxios.get('/api/issues');
       const allIssues = response.data;
       
       // Filter closed issues from last 7 days
       const sevenDaysAgo = format(subDays(today, 7), 'yyyy-MM-dd');
-      closedIssues = allIssues.filter((issue: any) => 
+      closedIssues = Array.isArray(allIssues) ? allIssues.filter((issue: any) => 
         issue.closedAt && 
         issue.closedAt >= sevenDaysAgo
-      );
+      ) : [];
     } catch (error) {
       console.error('Error fetching historical resolution time data:', error);
-      return generateFallbackResolutionTimeData();
+      throw error; // Throw error instead of returning fallback data
     }
     
     // If no data is found, return fallback data
