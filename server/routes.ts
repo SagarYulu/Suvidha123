@@ -885,6 +885,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         filteredFeedback = filteredFeedback.filter((f: any) => f.employeeId === employeeId);
       }
       
+      // Filter by city if specified
+      if (req.query.city && req.query.city !== 'all') {
+        filteredFeedback = filteredFeedback.filter((f: any) => f.city === req.query.city);
+      }
+      
+      // Filter by cluster if specified
+      if (req.query.cluster && req.query.cluster !== 'all') {
+        filteredFeedback = filteredFeedback.filter((f: any) => f.cluster === req.query.cluster);
+      }
+      
       // If both issueId and employeeId are provided, check if feedback exists for this combination
       if (issueId && employeeId) {
         const exists = filteredFeedback.some((f: any) => f.issueId === issueId && f.employeeId === employeeId);
@@ -948,6 +958,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         issueId: typeof req.body.issueId === 'string' ? parseInt(req.body.issueId) : req.body.issueId,
         employeeId: typeof req.body.employeeId === 'string' ? parseInt(req.body.employeeId) : req.body.employeeId
       };
+      
+      // Get employee details to add city and cluster
+      if (requestData.employeeId) {
+        const employee = await storage.getEmployee(requestData.employeeId);
+        if (employee) {
+          requestData.city = employee.city;
+          requestData.cluster = employee.cluster;
+        }
+      }
       
       const validatedData = insertTicketFeedbackSchema.parse(requestData);
       const feedback = await storage.createTicketFeedback(validatedData);

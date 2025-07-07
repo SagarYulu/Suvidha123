@@ -49,7 +49,7 @@ const DashboardContent = () => {
           {/* Pass current filters to FilterBar to ensure UI stays in sync */}
           <FilterBar 
             onFilterChange={handleFilterChange}
-            currentFilters={filters} 
+            initialFilters={filters} 
           />
           
           <DashboardMetrics 

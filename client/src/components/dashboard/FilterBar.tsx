@@ -29,9 +29,9 @@ const FilterBar = memo(({ onFilterChange, initialFilters }: FilterBarProps) => {
     console.log("FilterBar useEffect - initialFilters:", initialFilters);
     if (initialFilters) {
       console.log("Updating FilterBar state with initialFilters:", initialFilters);
-      setCity(initialFilters.city);
-      setCluster(initialFilters.cluster);
-      setIssueType(initialFilters.issueType);
+      setCity(initialFilters.city || null);
+      setCluster(initialFilters.cluster || null);
+      setIssueType(initialFilters.issueType || null);
     }
   }, [initialFilters]);
   
@@ -88,7 +88,8 @@ const FilterBar = memo(({ onFilterChange, initialFilters }: FilterBarProps) => {
   // IMPORTANT: To fix the UI display of selected filters
   // Get the appropriate select value to display, handling null values properly
   const getSelectValue = (value: string | null): string => {
-    const result = value || "all";
+    // Don't default to "all" if value is empty, return the actual value
+    const result = value === null || value === undefined ? "all" : value;
     console.log("getSelectValue called with:", value, "returning:", result);
     return result;
   };
