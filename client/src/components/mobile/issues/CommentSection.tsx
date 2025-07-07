@@ -60,7 +60,7 @@ const CommentSection = ({
   };
 
   return (
-    <Card>
+    <Card className="rounded-2xl">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center text-lg">
           <MessageSquare className="mr-2 h-5 w-5" />

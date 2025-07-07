@@ -26,7 +26,7 @@ const IssueHeader = ({
   const isClosedOrResolved = issue.status === "closed" || issue.status === "resolved";
   
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+    <div className="bg-white rounded-2xl shadow-md p-4 mb-4">
       <div className="flex justify-between items-start mb-3">
         <h2 className="font-semibold text-lg">
           {getIssueTypeLabel(issue.typeId)}
