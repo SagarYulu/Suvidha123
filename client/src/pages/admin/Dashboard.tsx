@@ -1,4 +1,3 @@
-
 import React from "react";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AdminLayout from "@/components/AdminLayout";
@@ -9,6 +8,8 @@ import RecentTicketsTable from "@/components/dashboard/RecentTicketsTable";
 import DashboardLoader from "@/components/dashboard/DashboardLoader";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { formatConsistentIssueData } from "@/services/issues/issueProcessingService";
+import { AuthDebugger } from "@/utils/authDebugger";
+import TokenInspector from "@/components/debug/TokenInspector";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -39,7 +40,10 @@ const DashboardContent = () => {
     return formatConsistentIssueData(recentIssues);
   }, [recentIssues]);
 
-  // Filters are managed by React Query via queryKey dependencies
+  // Run auth diagnostics on mount
+  React.useEffect(() => {
+    AuthDebugger.runFullDiagnostics();
+  }, []);
 
   // Test JWT Authentication
   const testAuth = async () => {
@@ -73,30 +77,26 @@ const DashboardContent = () => {
           >
             Test JWT Auth
           </button>
+          <TokenInspector />
           {/* Pass current filters to FilterBar to ensure UI stays in sync */}
           <FilterBar 
-            onFilterChange={handleFilterChange} 
-            initialFilters={filters}
+            onFilterChange={handleFilterChange}
+            currentFilters={filters} 
           />
           
-          {/* Dashboard Metrics */}
           <DashboardMetrics 
             analytics={analytics} 
-            userCount={userCount}
-            isLoading={isLoading} 
+            userCount={userCount} 
           />
-
-          {/* Charts Section */}
+          
           <ChartSection 
             typePieData={typePieData}
-            cityBarData={cityBarData}
-            isLoading={isLoading}
+            cityBarData={cityBarData} 
           />
-
-          {/* Recent Tickets Table - Pass formatted consistent issues */}
+          
           <RecentTicketsTable 
-            recentIssues={formattedRecentIssues}
-            isLoading={isLoading}
+            issues={formattedRecentIssues}
+            isLoading={isLoading} 
           />
         </div>
       )}
@@ -104,8 +104,8 @@ const DashboardContent = () => {
   );
 };
 
-// Main component that provides the query client
-const AdminDashboard = () => {
+// Main Dashboard component wrapped with QueryClientProvider
+const Dashboard = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <DashboardContent />
@@ -113,4 +113,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default Dashboard;
