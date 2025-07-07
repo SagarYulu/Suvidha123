@@ -128,6 +128,15 @@ This is a full-stack web application for managing employee issues and feedback i
 
 ## Changelog
 
+- July 08, 2025. Fixed Critical RBAC and Mobile Issues:
+  - **FIXED PERMISSIONS MISMATCH**: Corrected all permission names to match database values (e.g., tickets:view_all → view:tickets_all)
+  - **FIXED DATABASE QUERIES**: Updated getUserPermissions to use Drizzle ORM's sql template literal format
+  - **REMOVED DUPLICATE ROUTES**: Commented out duplicate /api/issues route in routes.ts that was overriding modular routes
+  - **FIXED MOBILE ENDPOINT**: Mobile employees now use /api/issues/my/issues endpoint which doesn't require dashboard permissions
+  - **RESOLVED AUTHENTICATION**: RBAC middleware now properly validates permissions with correct database queries
+  - **MOBILE APP WORKING**: Employee mobile app can now fetch issues without permission errors
+  - Dashboard and mobile interfaces both fully functional with proper access control
+
 - July 08, 2025. Holidays Management Feature Implementation:
   - **CREATED HOLIDAYS FEATURE**: Built complete holidays management system for accurate SLA tracking
   - **MVC ARCHITECTURE**: Created Holiday model, controller, and routes following MVC patterns

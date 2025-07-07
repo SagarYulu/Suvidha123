@@ -140,8 +140,20 @@ export const getAssignedIssues = async (userId: string | number): Promise<Issue[
  */
 export const getIssuesByUserId = async (userId: string | number): Promise<Issue[]> => {
   try {
-    const response = await authenticatedAxios.get(`/issues?employeeId=${userId}`);
-    const dbIssues = response.data || [];
+    // Check if the current user is an employee
+    const authData = localStorage.getItem('auth');
+    const isEmployee = authData ? JSON.parse(authData).userType === 'employee' : false;
+    
+    // Use the appropriate endpoint based on user type
+    const endpoint = isEmployee ? '/issues/my/issues' : `/issues?employeeId=${userId}`;
+    const response = await authenticatedAxios.get(endpoint);
+    const dbIssues = response.data;
+    
+    // Ensure dbIssues is an array
+    if (!Array.isArray(dbIssues)) {
+      console.error('Expected array but got:', typeof dbIssues, dbIssues);
+      return [];
+    }
     
     // Convert and process issues
     const issues = dbIssues.map(mapDbIssueToAppIssue);
