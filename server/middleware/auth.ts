@@ -26,14 +26,9 @@ export const authenticateToken = async (
       return res.status(401).json({ error: 'Access token required' });
     }
 
-    console.log('Token verification - JWT_SECRET:', JWT_SECRET ? 'Set' : 'Not set');
-    console.log('Token first 20 chars:', token.substring(0, 20) + '...');
-
     const decoded = jwt.verify(token, JWT_SECRET) as any;
-    console.log('Token decoded successfully:', { id: decoded.id, userId: decoded.userId, userType: decoded.userType });
-    
     req.user = {
-      id: decoded.id || decoded.userId,  // Handle both 'id' and 'userId' for compatibility
+      id: decoded.id,
       email: decoded.email,
       userType: decoded.userType,
       role: decoded.role
@@ -42,7 +37,6 @@ export const authenticateToken = async (
     next();
   } catch (error) {
     console.error('Auth middleware error:', error);
-    console.error('JWT_SECRET used:', JWT_SECRET);
     return res.status(403).json({ error: 'Invalid or expired token' });
   }
 };
