@@ -6,14 +6,14 @@ import { rbacMiddleware } from '../middleware/rbac';
 const router = Router();
 
 // Protected routes - Dashboard users only
-router.get('/', authMiddleware, rbacMiddleware(['tickets:view_all', 'users:view']), employeeController.getEmployees.bind(employeeController));
-router.get('/:id', authMiddleware, rbacMiddleware(['tickets:view_all', 'users:view']), employeeController.getEmployee.bind(employeeController));
-router.post('/', authMiddleware, rbacMiddleware(['users:create']), employeeController.createEmployee.bind(employeeController));
-router.put('/:id', authMiddleware, rbacMiddleware(['users:edit']), employeeController.updateEmployee.bind(employeeController));
-router.delete('/:id', authMiddleware, rbacMiddleware(['users:delete']), employeeController.deleteEmployee.bind(employeeController));
+router.get('/', authMiddleware, rbacMiddleware(['view:tickets_all', 'manage:users']), employeeController.getEmployees.bind(employeeController));
+router.get('/:id', authMiddleware, rbacMiddleware(['view:tickets_all', 'manage:users']), employeeController.getEmployee.bind(employeeController));
+router.post('/', authMiddleware, rbacMiddleware(['manage:users']), employeeController.createEmployee.bind(employeeController));
+router.put('/:id', authMiddleware, rbacMiddleware(['manage:users']), employeeController.updateEmployee.bind(employeeController));
+router.delete('/:id', authMiddleware, rbacMiddleware(['manage:users']), employeeController.deleteEmployee.bind(employeeController));
 
 // Bulk operations
-router.post('/bulk', authMiddleware, rbacMiddleware(['users:create']), employeeController.bulkCreateEmployees.bind(employeeController));
+router.post('/bulk', authMiddleware, rbacMiddleware(['manage:users']), employeeController.bulkCreateEmployees.bind(employeeController));
 
 // Employee profile route
 router.get('/profile/me', authMiddleware, employeeController.getProfile.bind(employeeController));
