@@ -27,7 +27,7 @@ export interface UserRole {
 // Get all roles
 export const getRoles = async (): Promise<Role[]> => {
   try {
-    const response = await authenticatedAxios.get('/rbac/roles');
+    const response = await authenticatedAxios.get('/api/rbac/roles');
     return response.data || [];
   } catch (error) {
     console.error('Error fetching roles:', error);
@@ -38,7 +38,7 @@ export const getRoles = async (): Promise<Role[]> => {
 // Get all permissions
 export const getPermissions = async (): Promise<Permission[]> => {
   try {
-    const response = await authenticatedAxios.get('/rbac/permissions');
+    const response = await authenticatedAxios.get('/api/rbac/permissions');
     return response.data || [];
   } catch (error) {
     console.error('Error fetching permissions:', error);
@@ -49,7 +49,7 @@ export const getPermissions = async (): Promise<Permission[]> => {
 // Get role permissions
 export const getRolePermissions = async (roleId: number): Promise<Permission[]> => {
   try {
-    const response = await authenticatedAxios.get(`/rbac/roles/${roleId}/permissions`);
+    const response = await authenticatedAxios.get(`/api/rbac/roles/${roleId}/permissions`);
     return response.data || [];
   } catch (error) {
     console.error('Error fetching role permissions:', error);
@@ -60,7 +60,7 @@ export const getRolePermissions = async (roleId: number): Promise<Permission[]> 
 // Get user roles
 export const getUserRoles = async (userId: number): Promise<Role[]> => {
   try {
-    const response = await authenticatedAxios.get(`/rbac/users/${userId}/roles`);
+    const response = await authenticatedAxios.get(`/api/rbac/users/${userId}/roles`);
     return response.data || [];
   } catch (error) {
     console.error('Error fetching user roles:', error);
@@ -71,7 +71,7 @@ export const getUserRoles = async (userId: number): Promise<Role[]> => {
 // Assign role to user
 export const assignRoleToUser = async (userId: number, roleId: number): Promise<UserRole> => {
   try {
-    const response = await authenticatedAxios.post('/rbac/user-roles', {
+    const response = await authenticatedAxios.post('/api/rbac/user-roles', {
       userId,
       roleId
     });
@@ -95,7 +95,7 @@ export const removeRoleFromUser = async (userId: number, roleId: number): Promis
 // Assign permission to role
 export const assignPermissionToRole = async (roleId: number, permissionId: number): Promise<RolePermission> => {
   try {
-    const response = await authenticatedAxios.post('/rbac/role-permissions', {
+    const response = await authenticatedAxios.post('/api/rbac/role-permissions', {
       roleId,
       permissionId
     });

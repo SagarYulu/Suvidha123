@@ -99,8 +99,12 @@ const AccessControl = () => {
         // Use the integer ID directly 
         const idToCheck = user.id;
         
-        if (await checkUserRole(idToCheck, "Super Admin")) {
-          adminIds.add(user.id);
+        try {
+          if (await checkUserRole(idToCheck, "Super Admin")) {
+            adminIds.add(String(user.id));
+          }
+        } catch (error) {
+          console.error(`Error checking role for user ${user.name}:`, error);
         }
       }
       setAdminUserIds(adminIds);

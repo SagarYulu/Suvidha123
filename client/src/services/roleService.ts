@@ -8,12 +8,28 @@ import authenticatedAxios from './authenticatedAxios';
  */
 export const checkUserRole = async (userId: number, roleName: string): Promise<boolean> => {
   try {
+    // First check if we have a valid user ID
+    if (!userId || isNaN(userId)) {
+      console.error('Invalid user ID provided:', userId);
+      return false;
+    }
+    
     const response = await authenticatedAxios.get(`/api/rbac/users/${userId}/roles`);
     const userRoles = response.data || [];
     
-    return userRoles.some((role: any) => 
-      role.name.toLowerCase() === roleName.toLowerCase()
-    );
+    // Handle both array and object responses
+    if (Array.isArray(userRoles)) {
+      return userRoles.some((role: any) => 
+        role && role.name && role.name.toLowerCase() === roleName.toLowerCase()
+      );
+    }
+    
+    // If single role object returned
+    if (userRoles && userRoles.name) {
+      return userRoles.name.toLowerCase() === roleName.toLowerCase();
+    }
+    
+    return false;
   } catch (error) {
     console.error('Error checking user role:', error);
     return false;
@@ -39,7 +55,7 @@ export const assignRole = async (userId: number, roleName: string): Promise<bool
     }
 
     // Assign the role to the user
-    await authenticatedAxios.post('/rbac/user-roles', {
+    await authenticatedAxios.post('/api/rbac/user-roles', {
       userId,
       roleId: role.id
     });
