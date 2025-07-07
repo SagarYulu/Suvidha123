@@ -133,7 +133,7 @@ const Index = () => {
           
           {/* Footer */}
           <div className="bg-white/5 px-8 py-4 border-t border-white/10">
-            <p className="text-white/60 text-center text-sm">
+            <p className="text-white text-center text-sm font-medium animate-glow">
               Powered by Yulu © {new Date().getFullYear()}
             </p>
           </div>
