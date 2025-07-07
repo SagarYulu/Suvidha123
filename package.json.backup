@@ -1,6 +1,0 @@
-{
-  "scripts": {
-    "dev": "npm run sync && NODE_ENV=development tsx server/index.ts",
-    "sync": "rm -rf frontend && cp -r client frontend"
-  }
-}
