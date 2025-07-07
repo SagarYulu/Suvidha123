@@ -393,6 +393,12 @@ This is a full-stack web application for managing employee issues and feedback i
     - **RAMBAN SOLUTION**: Self-contained documentation that serves as complete reference for any deployment scenario
     - Updated README.md with modern design, quick-start commands, and comprehensive feature overview
     - Fixed dashboard user password authentication and verified both desktop and mobile login systems working correctly
+  - Fixed critical mobile app API authentication error (January 13, 2025):
+    - Resolved 403 "Invalid or expired token" errors in mobile app after directory structure changes
+    - Root cause: getIssuesByUserId function was using incorrect API path (/issues instead of /api/issues)
+    - Fixed API endpoint path from `/issues?employeeId=${userId}` to `/api/issues?employeeId=${userId}`
+    - Mobile app now properly authenticates and fetches employee issues after verification
+    - Issue arose from duplicate client/frontend directories created to satisfy conflicting Vite and server configurations
 
 ## User Preferences
 
