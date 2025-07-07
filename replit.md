@@ -121,6 +121,15 @@ This is a full-stack web application for managing employee issues and feedback i
 
 ## Changelog
 
+- July 08, 2025. Dashboard Crash Fix and JWT Authentication Resolution:
+  - **FIXED DASHBOARD CRASH**: Resolved prop name mismatch causing RecentTicketsTable to crash
+  - **ROOT CAUSE**: Dashboard was passing 'issues' prop but component expected 'recentIssues'
+  - **JWT AUTHENTICATION FIXED**: Unified JWT_SECRET across all files (server/config/jwt.ts)
+  - **SOLUTION**: Changed JWT_SECRET in .env to match the default used in token generation
+  - **CLEANED UP**: Removed all debugging components and test buttons from dashboard
+  - **VERIFIED WORKING**: All API endpoints functioning with proper authentication
+  - Application now fully operational with clean interface and no authentication errors
+
 - July 08, 2025. Critical JWT Authentication Fix:
   - **FIXED JWT SECRET MISMATCH**: Resolved critical authentication failure affecting all protected endpoints
   - **ROOT CAUSE**: Token generation used 'your-secret-key' while verification used 'your-secret-key-here'

@@ -8,8 +8,6 @@ import RecentTicketsTable from "@/components/dashboard/RecentTicketsTable";
 import DashboardLoader from "@/components/dashboard/DashboardLoader";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { formatConsistentIssueData } from "@/services/issues/issueProcessingService";
-import { AuthDebugger } from "@/utils/authDebugger";
-import TokenInspector from "@/components/debug/TokenInspector";
 
 // Create a client
 const queryClient = new QueryClient({
@@ -40,52 +38,7 @@ const DashboardContent = () => {
     return formatConsistentIssueData(recentIssues);
   }, [recentIssues]);
 
-  // Check for JWT errors on mount
-  React.useEffect(() => {
-    // Check if we're getting 403 errors
-    const checkAuth = async () => {
-      try {
-        const response = await fetch('/api/issues', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (response.status === 403) {
-          console.log('⚠️ JWT authentication failed, clearing old tokens...');
-          // Clear all auth data
-          localStorage.clear();
-          sessionStorage.clear();
-          // Redirect to login
-          window.location.href = '/';
-        }
-      } catch (error) {
-        console.error('Auth check error:', error);
-      }
-    };
-    
-    checkAuth();
-  }, []);
 
-  // Test JWT Authentication
-  const testAuth = async () => {
-    console.log('Testing JWT Authentication...');
-    try {
-      const response = await fetch('/api/issues', {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      console.log('Auth Test Response:', { status: response.status, data });
-      alert(`Auth Test: ${response.status === 200 ? 'SUCCESS' : 'FAILED'} - Status: ${response.status}`);
-    } catch (error) {
-      console.error('Auth Test Error:', error);
-      alert('Auth Test Failed with error');
-    }
-  };
 
   return (
     <AdminLayout title="Dashboard">
@@ -93,14 +46,6 @@ const DashboardContent = () => {
         <DashboardLoader />
       ) : (
         <div className="space-y-6">
-          {/* Test Authentication Button */}
-          <button 
-            onClick={testAuth}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Test JWT Auth
-          </button>
-          <TokenInspector />
           {/* Pass current filters to FilterBar to ensure UI stays in sync */}
           <FilterBar 
             onFilterChange={handleFilterChange}
@@ -118,7 +63,7 @@ const DashboardContent = () => {
           />
           
           <RecentTicketsTable 
-            issues={formattedRecentIssues}
+            recentIssues={formattedRecentIssues}
             isLoading={isLoading} 
           />
         </div>
