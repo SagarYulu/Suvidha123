@@ -121,6 +121,13 @@ This is a full-stack web application for managing employee issues and feedback i
 
 ## Changelog
 
+- July 08, 2025. Directory Structure Unification:
+  - **REMOVED DUPLICATE FRONTEND DIRECTORY**: Eliminated confusion by removing duplicate frontend folder
+  - **UNIFIED CLIENT STRUCTURE**: Standardized on using 'client/' directory following React/Node.js conventions
+  - **CONFIGURATION UPDATES**: Updated server/vite.ts and tsconfig.json to use 'client/' paths
+  - **CLEAN ARCHITECTURE**: Single source of truth for frontend code, no more duplication
+  - Application now uses standard client/ directory structure throughout the codebase
+
 - July 07, 2025. Complete MVC Architecture Refactoring:
   - **MODELS LAYER CREATED**: Separated all database operations into dedicated model classes (Employee, DashboardUser, Issue)
   - **CONTROLLERS LAYER CREATED**: Extracted business logic from routes into controller classes with clear responsibilities
