@@ -74,7 +74,7 @@ const useSecurityManagement = () => {
   const fetchDashboardUsers = async () => {
     try {
       console.log("Fetching dashboard users...");
-      const response = await authenticatedAxios.get('/dashboard-users');
+      const response = await authenticatedAxios.get('/api/dashboard-users');
       
       const data = response.data;
       

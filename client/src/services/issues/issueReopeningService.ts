@@ -13,7 +13,7 @@ export const reopenIssue = async (
 ): Promise<Issue | null> => {
   try {
     // Update the issue status to open
-    await authenticatedAxios.patch(`/issues/${issueId}`, {
+    await authenticatedAxios.patch(`/api/issues/${issueId}`, {
       status: 'open',
       reopenableUntil: null,
       previouslyClosedAt: null
@@ -21,7 +21,7 @@ export const reopenIssue = async (
 
     // Add a comment about the reopen reason
     try {
-      await authenticatedAxios.post(`/issues/${issueId}/comments`, {
+      await authenticatedAxios.post(`/api/issues/${issueId}/comments`, {
         employeeUuid: Number(userId),
         content: `Issue reopened. Reason: ${reopenReason}`
       });

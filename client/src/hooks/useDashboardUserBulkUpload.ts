@@ -60,7 +60,7 @@ const useDashboardUserBulkUpload = (onUploadSuccess?: () => void) => {
 
   const insertDashboardUsers = async (users: any[]) => {
     // Use bulk insert API endpoint (no /api prefix since axios baseURL already includes it)
-    const response = await authenticatedAxios.post('/dashboard-users/bulk', { users });
+    const response = await authenticatedAxios.post('/api/dashboard-users/bulk', { users });
     return response.data;
   };
 

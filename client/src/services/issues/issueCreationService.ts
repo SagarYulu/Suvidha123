@@ -9,7 +9,7 @@ import authenticatedAxios from '@/services/authenticatedAxios';
 export const createIssue = async (issueData: Partial<Issue>): Promise<Issue | null> => {
   try {
     // Create the issue using our API
-    const response = await authenticatedAxios.post('/issues', {
+    const response = await authenticatedAxios.post('/api/issues', {
       employeeId: issueData.employeeId,
       typeId: issueData.typeId,
       subTypeId: issueData.subTypeId,

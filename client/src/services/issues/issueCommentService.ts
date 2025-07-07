@@ -5,7 +5,7 @@ import authenticatedAxios from '@/services/authenticatedAxios';
 export const getCommentsForIssue = async (issueId: string | number): Promise<IssueComment[]> => {
   try {
     const numericIssueId = Number(issueId);
-    const response = await authenticatedAxios.get(`/issues/${numericIssueId}/comments`);
+    const response = await authenticatedAxios.get(`/api/issues/${numericIssueId}/comments`);
     
     return response.data.map((dbComment: any) => ({
       id: dbComment.id,
@@ -25,7 +25,7 @@ async function getUserInfoForComment(employeeId: number) {
   try {
     // First try dashboard users
     try {
-      const response = await authenticatedAxios.get(`/dashboard-users/${employeeId}`);
+      const response = await authenticatedAxios.get(`/api/dashboard-users/${employeeId}`);
       const dashboardUser = response.data;
       
       if (dashboardUser) {
@@ -41,7 +41,7 @@ async function getUserInfoForComment(employeeId: number) {
     
     // Then try employees
     try {
-      const response = await authenticatedAxios.get(`/employees/${employeeId}`);
+      const response = await authenticatedAxios.get(`/api/employees/${employeeId}`);
       const employee = response.data;
       
       if (employee) {
@@ -83,7 +83,7 @@ export const addNewComment = async (
     const userInfo = await getUserInfoForComment(employeeId);
     
     // Add the comment - authenticatedAxios already has /api base URL
-    const response = await authenticatedAxios.post(`/issues/${numericIssueId}/comments`, {
+    const response = await authenticatedAxios.post(`/api/issues/${numericIssueId}/comments`, {
       content: content,
       employeeId: employeeId
     });

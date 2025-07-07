@@ -176,7 +176,7 @@ export const useBulkUpload = (onUploadSuccess?: () => void) => {
       // Check for existing employee IDs to avoid constraint violations
       let existingEmpIds: string[] = [];
       try {
-        const response = await authenticatedAxios.get('/employees');
+        const response = await authenticatedAxios.get('/api/employees');
         const allEmployees = response.data;
         existingEmpIds = allEmployees
           .filter((emp: any) => empIdsToCheck.includes(emp.emp_id || emp.empId))
@@ -235,7 +235,7 @@ export const useBulkUpload = (onUploadSuccess?: () => void) => {
       console.log("Inserting employees with data:", employeesData);
       
       // Use the bulk insert API endpoint with authentication
-      const response = await authenticatedAxios.post('/employees/bulk', { employees: employeesData });
+      const response = await authenticatedAxios.post('/api/employees/bulk', { employees: employeesData });
       const data = response.data;
       console.log('Upload successful. Inserted data:', data);
       

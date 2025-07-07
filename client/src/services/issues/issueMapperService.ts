@@ -16,7 +16,7 @@ export const mapIssue = async (
     console.log(`Mapping issue ${issueId} to type ${newTypeId}, subtype ${newSubTypeId}`);
     
     // Get current issue details for audit trail
-    const currentIssueResponse = await authenticatedAxios.get(`/issues/${issueId}`);
+    const currentIssueResponse = await authenticatedAxios.get(`/api/issues/${issueId}`);
     const currentIssue = currentIssueResponse.data;
     
     if (!currentIssue) {
@@ -26,7 +26,7 @@ export const mapIssue = async (
 
     // Update the issue with new type and subtype
     try {
-      await authenticatedAxios.patch(`/issues/${issueId}`, {
+      await authenticatedAxios.patch(`/api/issues/${issueId}`, {
         typeId: newTypeId,
         subTypeId: newSubTypeId,
         mappedTypeId: newTypeId,
@@ -64,7 +64,7 @@ export const mapIssue = async (
     });
 
     // Return the updated issue
-    const updatedIssueResponse = await authenticatedAxios.get(`/issues/${issueId}`);
+    const updatedIssueResponse = await authenticatedAxios.get(`/api/issues/${issueId}`);
     return updatedIssueResponse.data || null;
   } catch (error) {
     console.error("Error in mapIssue:", error);

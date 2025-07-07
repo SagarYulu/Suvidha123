@@ -15,7 +15,7 @@ export const assignIssue = async (
     // Get assignee info for better audit logs
     let assigneeName = "Suvidha";
     try {
-      const assigneeResponse = await authenticatedAxios.get(`/dashboard-users/${assigneeId}`);
+      const assigneeResponse = await authenticatedAxios.get(`/api/dashboard-users/${assigneeId}`);
       assigneeName = assigneeResponse.data?.name || "Suvidha";
     } catch (error) {
       console.log('Assignee not found in dashboard users');
@@ -24,7 +24,7 @@ export const assignIssue = async (
     // Get performer info (the person doing the assignment)
     let performerInfo = { name: "Suvidha", role: "Unknown" };
     try {
-      const performerResponse = await authenticatedAxios.get(`/dashboard-users/${currentUserId}`);
+      const performerResponse = await authenticatedAxios.get(`/api/dashboard-users/${currentUserId}`);
       performerInfo = {
         name: performerResponse.data?.name || "Suvidha",
         role: performerResponse.data?.role || "Unknown"
@@ -35,7 +35,7 @@ export const assignIssue = async (
     
     // Update the issue assignment
     try {
-      await authenticatedAxios.patch(`/issues/${issueId}`, {
+      await authenticatedAxios.patch(`/api/issues/${issueId}`, {
         assignedTo: Number(assigneeId),
         status: 'in_progress'
       });

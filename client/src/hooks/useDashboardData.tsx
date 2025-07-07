@@ -23,6 +23,7 @@ export const useDashboardData = () => {
   const { 
     data: issues = [], 
     isLoading: isIssuesLoading,
+    isFetching: isIssuesFetching,
     refetch: refetchIssues,
     error: issuesError
   } = useQuery({
@@ -40,6 +41,7 @@ export const useDashboardData = () => {
   const { 
     data: analytics, 
     isLoading: isAnalyticsLoading,
+    isFetching: isAnalyticsFetching,
     refetch: refetchAnalytics,
     error: analyticsError
   } = useQuery({
@@ -55,7 +57,8 @@ export const useDashboardData = () => {
   // Query for users data with proper caching
   const { 
     data: users = [], 
-    isLoading: isUsersLoading 
+    isLoading: isUsersLoading,
+    isFetching: isUsersFetching
   } = useQuery({
     queryKey: ['users'],
     queryFn: () => getUsers(),
@@ -149,12 +152,17 @@ export const useDashboardData = () => {
     });
   }, []);
 
+  // isLoading is true only on initial load
   const isLoading = isAnalyticsLoading || isIssuesLoading || isUsersLoading;
+  
+  // isFetching is true during background updates
+  const isFetching = isAnalyticsFetching || isIssuesFetching || isUsersFetching;
 
   return {
     analytics,
     recentIssues,
     isLoading,
+    isFetching,
     userCount,
     filters,
     handleFilterChange,

@@ -12,7 +12,7 @@ export interface InternalComment {
 // Fetch internal comments for a ticket
 export const getInternalComments = async (issueId: string | number): Promise<InternalComment[]> => {
   try {
-    const response = await authenticatedAxios.get(`/issues/${issueId}/internal-comments`);
+    const response = await authenticatedAxios.get(`/api/issues/${issueId}/internal-comments`);
     
     const data = response.data;
     
@@ -35,7 +35,7 @@ async function getUserInfo(employeeId: number) {
   try {
     // Check dashboard users first
     try {
-      const dashboardResponse = await authenticatedAxios.get(`/dashboard-users/${employeeId}`);
+      const dashboardResponse = await authenticatedAxios.get(`/api/dashboard-users/${employeeId}`);
       const dashboardUser = dashboardResponse.data;
       if (dashboardUser && dashboardUser.name) {
         return {
@@ -51,7 +51,7 @@ async function getUserInfo(employeeId: number) {
 
     // Then check employees
     try {
-      const employeeResponse = await authenticatedAxios.get(`/employees/${employeeId}`);
+      const employeeResponse = await authenticatedAxios.get(`/api/employees/${employeeId}`);
       const employee = employeeResponse.data;
       if (employee && employee.name) {
         return {
@@ -83,7 +83,7 @@ export const addInternalComment = async (
     // Ensure we have valid user information
     const userInfo = await getUserInfo(employeeId);
     
-    const response = await authenticatedAxios.post(`/issues/${issueId}/internal-comments`, {
+    const response = await authenticatedAxios.post(`/api/issues/${issueId}/internal-comments`, {
       employeeId,
       content
     });

@@ -13,6 +13,7 @@ const Dashboard = () => {
     analytics,
     recentIssues,
     isLoading,
+    isFetching,
     userCount,
     handleFilterChange,
     typePieData,
@@ -28,9 +29,12 @@ const Dashboard = () => {
 
 
 
+  // Show loader only on initial load when we have no data at all
+  const showLoader = isLoading && !analytics && !recentIssues && !typePieData.length;
+
   return (
     <AdminLayout title="Dashboard">
-      {isLoading && !analytics ? (
+      {showLoader ? (
         <DashboardLoader />
       ) : (
         <div className="space-y-6">

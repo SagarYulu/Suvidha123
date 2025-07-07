@@ -32,7 +32,7 @@ export const submitIssue = async (data: IssueSubmitData) => {
   console.log("Submitting issue with data:", issueData);
 
   try {
-    const response = await authenticatedAxios.post('/issues', issueData);
+    const response = await authenticatedAxios.post('/api/issues', issueData);
     
     if (response.data && response.data.id) {
       console.log('Issue created successfully:', response.data);

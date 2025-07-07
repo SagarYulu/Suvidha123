@@ -81,7 +81,7 @@ export const EscalationPanel: React.FC<EscalationPanelProps> = ({
       setEscalationHistory(historyResponse.data.data || []);
 
       // Fetch escalation rules
-      const rulesResponse = await authenticatedAxios.get('/escalations/rules');
+      const rulesResponse = await authenticatedAxios.get('/api/escalations/rules');
       setEscalationRules(rulesResponse.data.data || []);
     } catch (error) {
       console.error('Error fetching escalation data:', error);
