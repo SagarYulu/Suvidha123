@@ -171,7 +171,7 @@ export const fetchFeedbackData = async (filters: FeedbackFilters): Promise<Feedb
 export const fetchClosedTicketsCount = async (filters: FeedbackFilters): Promise<number> => {
   try {
     // Since the API doesn't support all filter parameters, fetch all issues and filter manually
-    const response = await authenticatedAxios.get('/issues');
+    const response = await authenticatedAxios.get('/api/issues');
     const allIssues = response.data || [];
     
     // Filter for closed/resolved tickets
@@ -272,7 +272,7 @@ export const fetchAgentFeedbackStats = async (filters: FeedbackFilters): Promise
     const missingNameAgents = agentIds.filter(id => !agentFeedbacks[id] || !agentFeedbacks[id].name);
     
     if (missingNameAgents.length > 0) {
-      const agentResponse = await authenticatedAxios.get(`/dashboard-users`);
+      const agentResponse = await authenticatedAxios.get(`/api/dashboard-users`);
       
       const agentData = agentResponse.data;
       agentData.forEach((agent: any) => {

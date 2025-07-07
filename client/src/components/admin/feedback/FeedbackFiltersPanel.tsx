@@ -46,7 +46,7 @@ const FeedbackFiltersPanel: React.FC<FeedbackFiltersPanelProps> = ({
   useEffect(() => {
     const fetchAgents = async () => {
       try {
-        const response = await authenticatedAxios.get('/dashboard-users');
+        const response = await authenticatedAxios.get('/api/dashboard-users');
         
         const data = response.data;
         const formattedAgents = data.map((user: any) => ({
