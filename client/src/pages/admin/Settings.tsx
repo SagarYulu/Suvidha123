@@ -55,6 +55,17 @@ import {
 } from '@/services/masterDataService';
 import { Role, City, Cluster, AuditLog } from '@/types/admin';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import {
+  getHolidays,
+  createHoliday,
+  updateHoliday,
+  deleteHoliday,
+  bulkUploadHolidays,
+  defaultHolidays2025,
+  type Holiday
+} from '@/services/holidayService';
+import { Calendar, Upload } from 'lucide-react';
+import { format } from 'date-fns';
 
 const Settings = () => {
   const auth = useAuth();
@@ -91,6 +102,21 @@ const Settings = () => {
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [isAuditLoading, setIsAuditLoading] = useState(false);
 
+  // Holidays state
+  const [holidays, setHolidays] = useState<Holiday[]>([]);
+  const [newHoliday, setNewHoliday] = useState<Partial<Holiday>>({
+    name: '',
+    date: '',
+    type: 'government',
+    recurring: false,
+    description: ''
+  });
+  const [editHoliday, setEditHoliday] = useState<Holiday | null>(null);
+  const [isHolidayDialogOpen, setIsHolidayDialogOpen] = useState(false);
+  const [isHolidayLoading, setIsHolidayLoading] = useState(false);
+  const [holidayToDelete, setHolidayToDelete] = useState<Holiday | null>(null);
+  const [isBulkUploadDialogOpen, setIsBulkUploadDialogOpen] = useState(false);
+
   // Load data based on active tab
   useEffect(() => {
     if (activeTab === "roles") {
@@ -99,6 +125,8 @@ const Settings = () => {
       loadCities();
     } else if (activeTab === "clusters") {
       loadClusters();
+    } else if (activeTab === "holidays") {
+      loadHolidays();
     } else if (activeTab === "audit") {
       loadAuditLogs();
     }
@@ -351,6 +379,121 @@ const Settings = () => {
     setIsAuditLoading(false);
   };
 
+  // Holidays functions
+  const loadHolidays = async () => {
+    setIsHolidayLoading(true);
+    const data = await getHolidays();
+    setHolidays(data);
+    setIsHolidayLoading(false);
+  };
+
+  const handleHolidaySave = async () => {
+    setIsHolidayLoading(true);
+    
+    try {
+      if (editHoliday) {
+        const updated = await updateHoliday(editHoliday.id!, {
+          name: newHoliday.name,
+          date: newHoliday.date,
+          type: newHoliday.type,
+          recurring: newHoliday.recurring,
+          description: newHoliday.description
+        });
+        if (updated) {
+          toast({
+            title: "Success",
+            description: "Holiday updated successfully",
+          });
+          loadHolidays();
+        }
+      } else {
+        const created = await createHoliday({
+          name: newHoliday.name!,
+          date: newHoliday.date!,
+          type: newHoliday.type as 'government' | 'restricted',
+          recurring: newHoliday.recurring!,
+          description: newHoliday.description
+        });
+        if (created) {
+          toast({
+            title: "Success",
+            description: "Holiday created successfully",
+          });
+          loadHolidays();
+        }
+      }
+      setIsHolidayDialogOpen(false);
+      setNewHoliday({
+        name: '',
+        date: '',
+        type: 'government',
+        recurring: false,
+        description: ''
+      });
+      setEditHoliday(null);
+    } catch (error) {
+      console.error("Error saving holiday:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save holiday",
+        variant: "destructive",
+      });
+    }
+    
+    setIsHolidayLoading(false);
+  };
+
+  const handleDeleteHoliday = async () => {
+    if (!holidayToDelete) return;
+    
+    setIsHolidayLoading(true);
+    try {
+      const success = await deleteHoliday(holidayToDelete.id!);
+      if (success) {
+        setHolidays(prev => prev.filter(holiday => holiday.id !== holidayToDelete.id));
+        toast({
+          title: "Success",
+          description: "Holiday deleted successfully",
+        });
+        setTimeout(() => loadHolidays(), 100);
+      } else {
+        throw new Error("Failed to delete holiday");
+      }
+      setHolidayToDelete(null);
+    } catch (error) {
+      console.error("Error deleting holiday:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete holiday",
+        variant: "destructive",
+      });
+    }
+    setIsHolidayLoading(false);
+  };
+
+  const handleBulkUpload = async () => {
+    setIsHolidayLoading(true);
+    try {
+      const result = await bulkUploadHolidays(defaultHolidays2025);
+      if (result) {
+        toast({
+          title: "Success",
+          description: result.message,
+        });
+        loadHolidays();
+        setIsBulkUploadDialogOpen(false);
+      }
+    } catch (error) {
+      console.error("Error bulk uploading holidays:", error);
+      toast({
+        title: "Error",
+        description: "Failed to bulk upload holidays",
+        variant: "destructive",
+      });
+    }
+    setIsHolidayLoading(false);
+  };
+
   // Format date for display
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -373,10 +516,11 @@ const Settings = () => {
     <AdminLayout title="Settings">
       <div className="space-y-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-4 mb-8">
+          <TabsList className="grid grid-cols-5 mb-8">
             <TabsTrigger value="roles">Roles</TabsTrigger>
             <TabsTrigger value="cities">Cities</TabsTrigger>
             <TabsTrigger value="clusters">Clusters</TabsTrigger>
+            <TabsTrigger value="holidays">Holidays</TabsTrigger>
             <TabsTrigger value="audit">Audit Logs</TabsTrigger>
           </TabsList>
 
@@ -915,6 +1059,241 @@ const Settings = () => {
                   Refresh Logs
                 </Button>
               </CardFooter>
+            </Card>
+          </TabsContent>
+
+          {/* Holidays Tab */}
+          <TabsContent value="holidays">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <Calendar className="h-5 w-5" />
+                    Holidays Management
+                  </span>
+                  <div className="space-x-2">
+                    <Dialog open={isBulkUploadDialogOpen} onOpenChange={setIsBulkUploadDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button variant="outline">
+                          <Upload className="mr-2 h-4 w-4" />
+                          Upload 2025 Holidays
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Upload Default Holidays</DialogTitle>
+                          <DialogDescription>
+                            This will upload all Indian national holidays for 2025. 
+                            The following holidays will be added:
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="max-h-60 overflow-y-auto">
+                          <ul className="space-y-1 text-sm">
+                            {defaultHolidays2025.map((holiday, index) => (
+                              <li key={index} className="flex justify-between">
+                                <span>{holiday.name}</span>
+                                <span className="text-gray-500">{holiday.date}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <DialogFooter>
+                          <Button
+                            variant="outline"
+                            onClick={() => setIsBulkUploadDialogOpen(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button onClick={handleBulkUpload} disabled={isHolidayLoading}>
+                            {isHolidayLoading ? (
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : null}
+                            Upload Holidays
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                    <Dialog open={isHolidayDialogOpen} onOpenChange={setIsHolidayDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button onClick={() => {
+                          setEditHoliday(null);
+                          setNewHoliday({
+                            name: '',
+                            date: '',
+                            type: 'government',
+                            recurring: false,
+                            description: ''
+                          });
+                        }}>
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          Add Holiday
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>{editHoliday ? 'Edit Holiday' : 'Add New Holiday'}</DialogTitle>
+                          <DialogDescription>
+                            {editHoliday ? 'Update the holiday details.' : 'Create a new holiday for SLA tracking.'}
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div>
+                            <label className="text-sm font-medium">Holiday Name</label>
+                            <Input
+                              value={newHoliday.name || ''}
+                              onChange={(e) => setNewHoliday({ ...newHoliday, name: e.target.value })}
+                              placeholder="e.g., Independence Day"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium">Date</label>
+                            <Input
+                              type="date"
+                              value={newHoliday.date || ''}
+                              onChange={(e) => setNewHoliday({ ...newHoliday, date: e.target.value })}
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium">Type</label>
+                            <Select
+                              value={newHoliday.type}
+                              onValueChange={(value) => setNewHoliday({ ...newHoliday, type: value as 'government' | 'restricted' })}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="government">Government Holiday</SelectItem>
+                                <SelectItem value="restricted">Restricted Holiday</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id="recurring"
+                              checked={newHoliday.recurring || false}
+                              onChange={(e) => setNewHoliday({ ...newHoliday, recurring: e.target.checked })}
+                              className="rounded border-gray-300"
+                            />
+                            <label htmlFor="recurring" className="text-sm font-medium">
+                              Recurring Annual Holiday
+                            </label>
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium">Description (Optional)</label>
+                            <Input
+                              value={newHoliday.description || ''}
+                              onChange={(e) => setNewHoliday({ ...newHoliday, description: e.target.value })}
+                              placeholder="Additional details about the holiday"
+                            />
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <Button
+                            variant="outline"
+                            onClick={() => setIsHolidayDialogOpen(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button onClick={handleHolidaySave} disabled={isHolidayLoading}>
+                            {isHolidayLoading ? (
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : null}
+                            {editHoliday ? 'Update' : 'Create'} Holiday
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </CardTitle>
+                <CardDescription>
+                  Manage holidays for accurate SLA and business hours calculation.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isHolidayLoading ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                  </div>
+                ) : holidays.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <Calendar className="h-12 w-12 text-gray-400 mb-4" />
+                    <h3 className="text-lg font-medium">No holidays found</h3>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Add holidays to ensure accurate SLA tracking.
+                    </p>
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Holiday Name</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>Recurring</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {holidays.map((holiday) => (
+                        <TableRow key={holiday.id}>
+                          <TableCell>{format(new Date(holiday.date), 'dd MMM yyyy')}</TableCell>
+                          <TableCell className="font-medium">{holiday.name}</TableCell>
+                          <TableCell className="capitalize">{holiday.type}</TableCell>
+                          <TableCell>{holiday.recurring ? 'Yes' : 'No'}</TableCell>
+                          <TableCell className="max-w-xs truncate">{holiday.description || '-'}</TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setEditHoliday(holiday);
+                                setNewHoliday({
+                                  name: holiday.name,
+                                  date: holiday.date,
+                                  type: holiday.type as 'government' | 'restricted',
+                                  recurring: holiday.recurring,
+                                  description: holiday.description
+                                });
+                                setIsHolidayDialogOpen(true);
+                              }}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setHolidayToDelete(holiday)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Delete Holiday</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Are you sure you want to delete "{holiday.name}"? This action cannot be undone.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={handleDeleteHoliday}>
+                                    Delete
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CardContent>
             </Card>
           </TabsContent>
         </Tabs>

@@ -2,7 +2,6 @@ import axios from 'axios';
 
 // Create a centralized axios instance with JWT authentication for all API calls
 const authenticatedAxios = axios.create({
-  baseURL: '/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
