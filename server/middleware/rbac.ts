@@ -38,16 +38,18 @@ async function getUserPermissions(userId: number): Promise<string[]> {
   try {
     const result = await db.execute({
       sql: `
-        SELECT p.permission_key
+        SELECT DISTINCT p.name as permission_name
         FROM dashboard_users du
-        JOIN role_permissions rp ON du.role = rp.role_name
-        JOIN permissions p ON rp.permission_id = p.id
-        WHERE du.id = ? AND rp.has_permission = true
+        JOIN rbac_roles r ON r.name = du.role
+        JOIN rbac_role_permissions rp ON rp.role_id = r.id
+        JOIN rbac_permissions p ON p.id = rp.permission_id
+        WHERE du.id = ?
       `,
       args: [userId]
     });
 
-    return result.rows.map((row: any) => row.permission_key);
+    console.log(`User ${userId} permissions:`, result.rows.map((row: any) => row.permission_name));
+    return result.rows.map((row: any) => row.permission_name);
   } catch (error) {
     console.error('Error fetching user permissions:', error);
     return [];

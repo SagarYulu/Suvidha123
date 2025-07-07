@@ -437,7 +437,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Issue routes (protected)
-  app.get("/api/issues", authenticateToken, async (req, res) => {
+  // Commented out - now handled by modular routes in routes/issueRoutes.ts
+  /* app.get("/api/issues", authenticateToken, async (req, res) => {
     try {
       const filters = {
         status: req.query.status as string,
@@ -525,7 +526,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching issues:", error);
       res.status(500).json({ error: "Internal server error" });
     }
-  });
+  }); */
 
   app.get("/api/issues/count", authenticateToken, async (req, res) => {
     try {
