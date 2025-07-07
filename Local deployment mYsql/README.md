@@ -10,7 +10,17 @@ This folder contains all the necessary files and documentation to deploy the Yul
 4. **setup_mysql_local.sh** - Automated setup script (Linux/Mac)
 5. **env.example** - Example environment configuration file
 6. **troubleshooting.md** - Common issues and solutions
-7. **README.md** - This file
+7. **schema-mysql.ts** - Drizzle ORM schema for MySQL
+8. **storage-mysql.ts** - Storage implementation for MySQL
+9. **database-config-mysql.ts** - Database configuration
+10. **drizzle.config.mysql.ts** - Drizzle configuration for MySQL
+11. **sql-query-conversions.md** - PostgreSQL to MySQL query guide
+12. **migration-from-postgresql.sh** - Migration script from PostgreSQL
+13. **test-mysql-connection.ts** - Connection test script
+14. **package.json.mysql** - NPM scripts for MySQL operations
+15. **DISCLAIMER.md** - Important notes about MySQL vs PostgreSQL
+16. **CHECKLIST.md** - Deployment verification checklist
+17. **README.md** - This file
 
 ## 🚀 Quick Start
 

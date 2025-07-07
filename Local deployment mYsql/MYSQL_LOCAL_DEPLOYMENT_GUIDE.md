@@ -645,7 +645,13 @@ mysql -u yulu_user -p yulu_grievance_db < seed_data.sql
 npm run db:generate
 ```
 
-### 5. Start the Application
+### 5. Test the Connection
+```bash
+# Run the MySQL connection test
+npm run mysql:test
+```
+
+### 6. Start the Application
 ```bash
 npm run dev
 ```
@@ -655,6 +661,21 @@ The application will start on http://localhost:5000
 ### Default Login Credentials
 - Admin: admin@yulu.com / admin123
 - Employee: chinnumalleshchinnu@gmail.com / XPH1884
+
+## Additional NPM Scripts for MySQL
+
+```json
+{
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit migrate", 
+    "db:studio": "drizzle-kit studio",
+    "mysql:backup": "mysqldump -u $DB_USER -p$DB_PASSWORD $DB_NAME > backup_$(date +%Y%m%d_%H%M%S).sql",
+    "mysql:test": "tsx Local\\ deployment\\ mYsql/test-mysql-connection.ts",
+    "mysql:setup": "cd Local\\ deployment\\ mYsql && ./setup_mysql_local.sh"
+  }
+}
 
 ## Troubleshooting
 

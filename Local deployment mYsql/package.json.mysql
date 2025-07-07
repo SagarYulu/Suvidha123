@@ -1,0 +1,30 @@
+{
+  "scripts": {
+    "dev": "NODE_ENV=development tsx server/index.ts",
+    "build": "vite build",
+    "preview": "vite preview",
+    
+    "// MySQL specific database commands": "",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME < Local\\ deployment\\ mYsql/seed_data.sql",
+    
+    "// MySQL maintenance commands": "",
+    "mysql:backup": "mysqldump -u $DB_USER -p$DB_PASSWORD $DB_NAME > backup_$(date +%Y%m%d_%H%M%S).sql",
+    "mysql:restore": "mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME < $1",
+    "mysql:test": "tsx Local\\ deployment\\ mYsql/test-mysql-connection.ts",
+    "mysql:setup": "cd Local\\ deployment\\ mYsql && ./setup_mysql_local.sh",
+    
+    "// Development helpers": "",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx",
+    "clean": "rm -rf dist node_modules/.vite"
+  },
+  "dependencies": {
+    "mysql2": "^3.6.5",
+    "drizzle-orm": "latest",
+    "drizzle-kit": "latest"
+  }
+}
