@@ -4,7 +4,7 @@ import { getCurrentISTTime } from "./utils/timezone";
 import { 
   employees, dashboardUsers, issues, issueComments, 
   issueInternalComments, ticketFeedback, rbacRoles, rbacPermissions,
-  masterRoles, masterCities, masterClusters, issueAuditTrail,
+  masterRoles, masterCities, masterClusters, issueAuditTrail, masterAuditLogs,
   type Employee, type DashboardUser, type Issue, 
   type IssueComment, type InsertEmployee, 
   type InsertDashboardUser, type InsertIssue, type InsertIssueComment,
@@ -444,6 +444,21 @@ export class DatabaseStorage implements IStorage {
   async deleteMasterCluster(id: number): Promise<boolean> {
     const result = await db.delete(masterClusters).where(eq(masterClusters.id, id));
     return (result.rowCount || 0) > 0;
+  }
+
+  async getMasterAuditLogs(): Promise<any[]> {
+    return await db.select({
+      id: masterAuditLogs.id,
+      entityType: masterAuditLogs.entityType,
+      entityId: masterAuditLogs.entityId,
+      action: masterAuditLogs.action,
+      changes: masterAuditLogs.changes,
+      createdBy: masterAuditLogs.createdBy,
+      createdAt: masterAuditLogs.createdAt
+    })
+    .from(masterAuditLogs)
+    .orderBy(desc(masterAuditLogs.createdAt))
+    .limit(100);
   }
 }
 

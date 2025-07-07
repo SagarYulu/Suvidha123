@@ -128,6 +128,16 @@ This is a full-stack web application for managing employee issues and feedback i
 
 ## Changelog
 
+- July 08, 2025. Master Data API Implementation and RBAC Fixes:
+  - **IMPLEMENTED MASTER DATA ROUTES**: Created missing backend API endpoints that were only documented in Swagger
+  - **CREATED ROUTES**: Built /api/master-data/roles, /api/master-data/cities, /api/master-data/clusters endpoints
+  - **FIXED DATABASE IMPORTS**: Corrected all RBAC route imports from './db' to './config/db' (4 instances)
+  - **ADDED STORAGE METHOD**: Implemented getMasterAuditLogs method in storage service
+  - **VERIFIED WORKING**: All master data endpoints returning correct data with relationships
+  - **RBAC PERMISSIONS FIXED**: /api/rbac/permissions endpoint now working after import corrections
+  - Master data routes properly integrated with authentication and RBAC middleware
+  - Role Permissions Manager can now load data successfully from all required endpoints
+
 - July 08, 2025. Fixed Critical RBAC and Mobile Issues:
   - **FIXED PERMISSIONS MISMATCH**: Corrected all permission names to match database values (e.g., tickets:view_all → view:tickets_all)
   - **FIXED DATABASE QUERIES**: Updated getUserPermissions to use Drizzle ORM's sql template literal format

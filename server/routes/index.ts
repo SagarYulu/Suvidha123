@@ -3,6 +3,7 @@ import { authRoutes } from './authRoutes';
 import { employeeRoutes } from './employeeRoutes';
 import { issueRoutes } from './issueRoutes';
 import holidayRoutes from './holidayRoutes';
+import masterDataRoutes from './masterDataRoutes';
 
 const router = Router();
 
@@ -11,6 +12,7 @@ router.use('/auth', authRoutes);
 router.use('/employees', employeeRoutes);
 router.use('/issues', issueRoutes);
 router.use('/holidays', holidayRoutes);
+router.use('/master-data', masterDataRoutes);
 
 // Health check
 router.get('/health', (req, res) => {

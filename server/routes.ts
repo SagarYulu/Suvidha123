@@ -1814,7 +1814,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all roles
   app.get("/api/rbac/roles", authenticateToken, async (req, res) => {
     try {
-      const { pool } = await import("./db");
+      const { pool } = await import("./config/db");
       const query = `SELECT * FROM rbac_roles ORDER BY name`;
       const result = await pool.query(query);
       res.json(result.rows);
@@ -1827,7 +1827,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all permissions
   app.get("/api/rbac/permissions", authenticateToken, async (req, res) => {
     try {
-      const { pool } = await import("./db");
+      const { pool } = await import("./config/db");
       const query = `SELECT * FROM rbac_permissions ORDER BY name`;
       const result = await pool.query(query);
       res.json(result.rows);
@@ -1845,7 +1845,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid role ID" });
       }
       
-      const { pool } = await import("./db");
+      const { pool } = await import("./config/db");
       const query = `
         SELECT p.* 
         FROM rbac_permissions p
@@ -1870,7 +1870,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Role ID and Permission ID are required" });
       }
       
-      const { pool } = await import("./db");
+      const { pool } = await import("./config/db");
       const query = `
         INSERT INTO rbac_role_permissions (role_id, permission_id, created_at)
         VALUES ($1, $2, NOW())
@@ -1900,7 +1900,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid role ID or permission ID" });
       }
       
-      const { pool } = await import("./db");
+      const { pool } = await import("./config/db");
       const query = `
         DELETE FROM rbac_role_permissions 
         WHERE role_id = $1 AND permission_id = $2
