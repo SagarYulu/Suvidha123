@@ -124,7 +124,7 @@ export const fetchFeedbackData = async (filters: FeedbackFilters): Promise<Feedb
     }
     
     // Make API call to get feedback data
-    const response = await authenticatedAxios.get(`/ticket-feedback?${queryParams.toString()}`);
+    const response = await authenticatedAxios.get(`/api/ticket-feedback?${queryParams.toString()}`);
     
     const data = response.data;
     console.log("API Response for feedback data:", JSON.stringify(data, null, 2));
@@ -252,7 +252,7 @@ export const fetchAgentFeedbackStats = async (filters: FeedbackFilters): Promise
     });
     
     // Now fetch feedback data
-    const feedbackResponse = await authenticatedAxios.get(`/ticket-feedback`);
+    const feedbackResponse = await authenticatedAxios.get(`/api/ticket-feedback`);
     
     const feedbackData = feedbackResponse.data;
     

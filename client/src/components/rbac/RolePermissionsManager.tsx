@@ -28,6 +28,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRBAC } from '@/contexts/RBACContext';
 
 const RolePermissionsManager: React.FC = () => {
+  console.log("RolePermissionsManager component rendering");
+  
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [rolePermissions, setRolePermissions] = useState<Record<number, Record<number, boolean>>>({});

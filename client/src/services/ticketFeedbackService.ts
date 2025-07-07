@@ -25,7 +25,7 @@ interface EmployeeData {
 export const checkFeedbackExists = async (issueId: string, employeeId: string): Promise<boolean> => {
   try {
     console.log(`Checking feedback for issue: ${issueId}, employee: ${employeeId}`);
-    const response = await authenticatedAxios.get(`/ticket-feedback?issueId=${issueId}&employeeId=${employeeId}`);
+    const response = await authenticatedAxios.get(`/api/ticket-feedback?issueId=${issueId}&employeeId=${employeeId}`);
     
     return response.data.exists || false;
   } catch (error) {
@@ -37,7 +37,7 @@ export const checkFeedbackExists = async (issueId: string, employeeId: string): 
 // Get feedback status for a ticket
 export const getFeedbackStatus = async (issueId: string): Promise<boolean> => {
   try {
-    const response = await authenticatedAxios.get(`/ticket-feedback?issueId=${issueId}`);
+    const response = await authenticatedAxios.get(`/api/ticket-feedback?issueId=${issueId}`);
     
     return response.data.exists || false;
   } catch (error) {

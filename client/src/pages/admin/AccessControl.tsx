@@ -34,6 +34,8 @@ import RolePermissionsManager from "@/components/rbac/RolePermissionsManager";
 import { checkUserRole, assignRole, removeRole } from "@/services/roleService";
 
 const AccessControl = () => {
+  console.log("AccessControl component rendering");
+  
   // Original state for user management
   const [dashboardUsers, setDashboardUsers] = useState<DashboardUser[]>([]);
   const [loading, setLoading] = useState(true);
