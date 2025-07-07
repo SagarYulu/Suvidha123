@@ -45,9 +45,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (isValidPassword) {
           const token = jwt.sign(
             { 
-              userId: employee.id, 
+              id: employee.id, 
               userType: 'employee',
-              email: employee.email 
+              email: employee.email,
+              role: employee.role
             },
             process.env.JWT_SECRET || 'your-secret-key',
             { expiresIn: '24h' }
@@ -78,9 +79,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (isValidPassword) {
           const token = jwt.sign(
             { 
-              userId: dashboardUser.id, 
+              id: dashboardUser.id, 
               userType: 'dashboard_user',
-              email: dashboardUser.email 
+              email: dashboardUser.email,
+              role: dashboardUser.role
             },
             process.env.JWT_SECRET || 'your-secret-key',
             { expiresIn: '24h' }
@@ -120,9 +122,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (employee && employee.empId === employeeId) {
         const token = jwt.sign(
           { 
-            userId: employee.id, 
+            id: employee.id, 
             userType: 'employee',
-            email: employee.email 
+            email: employee.email,
+            role: employee.role
           },
           process.env.JWT_SECRET || 'your-secret-key',
           { expiresIn: '24h' }
