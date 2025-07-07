@@ -1,0 +1,208 @@
+openapi: 3.0.0
+info:
+  title: Health API
+  version: 1.0.0
+  description: System health check endpoints
+
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      description: Basic health check endpoint
+      tags:
+        - Health
+      security: []
+      responses:
+        200:
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy]
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /api/health/detailed:
+    get:
+      summary: Detailed health check
+      description: Comprehensive system health check including database and services
+      tags:
+        - Health
+      responses:
+        200:
+          description: Detailed health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded, unhealthy]
+                    example: healthy
+                  uptime:
+                    type: number
+                    format: float
+                    description: System uptime in seconds
+                    example: 3456.78
+                  timestamp:
+                    type: string
+                    format: date-time
+                  components:
+                    type: object
+                    properties:
+                      database:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            enum: [up, down]
+                            example: up
+                          latency:
+                            type: number
+                            format: float
+                            description: Database query latency in ms
+                            example: 2.5
+                      websocket:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            enum: [up, down]
+                            example: up
+                          connections:
+                            type: integer
+                            description: Active WebSocket connections
+                            example: 15
+                      memory:
+                        type: object
+                        properties:
+                          used:
+                            type: integer
+                            description: Memory used in MB
+                            example: 256
+                          total:
+                            type: integer
+                            description: Total memory in MB
+                            example: 1024
+                          percentage:
+                            type: number
+                            format: float
+                            example: 25.0
+                      cpu:
+                        type: object
+                        properties:
+                          usage:
+                            type: number
+                            format: float
+                            description: CPU usage percentage
+                            example: 15.5
+
+  /api/health/ping:
+    get:
+      summary: Ping endpoint
+      description: Simple ping endpoint for monitoring
+      tags:
+        - Health
+      security: []
+      responses:
+        200:
+          description: Pong response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum: [pong]
+                    example: pong
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /api/health/database:
+    get:
+      summary: Database health check
+      description: Check database connectivity and performance
+      tags:
+        - Health
+      responses:
+        200:
+          description: Database is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [connected, disconnected]
+                    example: connected
+                  database:
+                    type: string
+                    example: PostgreSQL
+                  version:
+                    type: string
+                    example: 14.5
+                  connectionPool:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 10
+                      active:
+                        type: integer
+                        example: 3
+                      idle:
+                        type: integer
+                        example: 7
+                  latency:
+                    type: number
+                    format: float
+                    description: Query latency in milliseconds
+                    example: 1.5
+        500:
+          description: Database connection error
+
+  /api/health/reset-password:
+    post:
+      summary: Reset admin password
+      description: Reset admin password to default (development only)
+      tags:
+        - Health
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: admin@yulu.com
+      responses:
+        200:
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Password reset to admin123
+        404:
+          description: User not found
+        503:
+          description: Feature disabled in production

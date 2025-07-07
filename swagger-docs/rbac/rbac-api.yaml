@@ -1,0 +1,217 @@
+openapi: 3.0.0
+info:
+  title: RBAC API
+  version: 1.0.0
+  description: Role-Based Access Control management
+
+paths:
+  /api/rbac/roles:
+    get:
+      summary: Get all roles
+      tags:
+        - RBAC
+      responses:
+        200:
+          description: List of roles
+
+    post:
+      summary: Create new role
+      tags:
+        - RBAC
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - description
+              properties:
+                name:
+                  type: string
+                  example: Regional Manager
+                description:
+                  type: string
+                  example: Manages operations for a specific region
+      responses:
+        201:
+          description: Role created successfully
+
+  /api/rbac/roles/{id}:
+    get:
+      summary: Get role by ID
+      tags:
+        - RBAC
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Role details
+        404:
+          description: Role not found
+
+    put:
+      summary: Update role
+      tags:
+        - RBAC
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        200:
+          description: Role updated successfully
+
+    delete:
+      summary: Delete role
+      tags:
+        - RBAC
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Role deleted successfully
+
+  /api/rbac/permissions:
+    get:
+      summary: Get all permissions
+      tags:
+        - RBAC
+      responses:
+        200:
+          description: List of permissions
+
+  /api/rbac/roles/{roleId}/permissions:
+    get:
+      summary: Get role permissions
+      tags:
+        - RBAC
+      parameters:
+        - in: path
+          name: roleId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Role permissions
+
+    put:
+      summary: Update role permissions
+      tags:
+        - RBAC
+      parameters:
+        - in: path
+          name: roleId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                permissions:
+                  type: array
+                  items:
+                    type: integer
+                  description: Array of permission IDs
+      responses:
+        200:
+          description: Permissions updated successfully
+
+  /api/rbac/users/{userId}/roles:
+    get:
+      summary: Get user roles
+      tags:
+        - RBAC
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: User roles
+
+    put:
+      summary: Assign roles to user
+      tags:
+        - RBAC
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roleIds:
+                  type: array
+                  items:
+                    type: integer
+                  description: Array of role IDs to assign
+      responses:
+        200:
+          description: Roles assigned successfully
+
+components:
+  schemas:
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+
+    Permission:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        category:
+          type: string

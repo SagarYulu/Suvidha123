@@ -1,0 +1,294 @@
+openapi: 3.0.0
+info:
+  title: Issues API
+  version: 1.0.0
+  description: Issue/ticket management endpoints
+
+paths:
+  /api/issues:
+    get:
+      summary: Get all issues
+      description: Retrieve a list of issues with optional filters
+      tags:
+        - Issues
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [open, in_progress, resolved, closed]
+          description: Filter by issue status
+        - in: query
+          name: priority
+          schema:
+            type: string
+            enum: [low, medium, high, critical]
+          description: Filter by priority
+        - in: query
+          name: assignedTo
+          schema:
+            type: integer
+          description: Filter by assigned user ID
+        - in: query
+          name: employeeId
+          schema:
+            type: integer
+          description: Filter by employee ID
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+          description: Filter by start date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+          description: Filter by end date
+      responses:
+        200:
+          description: List of issues
+
+    post:
+      summary: Create new issue
+      tags:
+        - Issues
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIssue'
+      responses:
+        201:
+          description: Issue created successfully
+
+  /api/issues/{id}:
+    get:
+      summary: Get issue by ID
+      tags:
+        - Issues
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Issue details
+        404:
+          description: Issue not found
+
+    put:
+      summary: Update issue
+      tags:
+        - Issues
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIssue'
+      responses:
+        200:
+          description: Issue updated successfully
+
+    delete:
+      summary: Delete issue
+      tags:
+        - Issues
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Issue deleted successfully
+
+  /api/issues/{id}/assign:
+    put:
+      summary: Assign issue
+      description: Assign an issue to a dashboard user
+      tags:
+        - Issues
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assignedTo:
+                  type: integer
+                  description: Dashboard user ID to assign to
+      responses:
+        200:
+          description: Issue assigned successfully
+
+  /api/issues/{id}/status:
+    patch:
+      summary: Update issue status
+      tags:
+        - Issues
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [open, in_progress, resolved, closed]
+      responses:
+        200:
+          description: Status updated successfully
+
+  /api/issues/my/issues:
+    get:
+      summary: Get my issues
+      description: Get issues created by the logged-in employee
+      tags:
+        - Issues
+      responses:
+        200:
+          description: List of user's issues
+
+  /api/issues/assigned/me:
+    get:
+      summary: Get assigned issues
+      description: Get issues assigned to the logged-in dashboard user
+      tags:
+        - Issues
+      responses:
+        200:
+          description: List of assigned issues
+
+  /api/issues/stats:
+    get:
+      summary: Get issue statistics
+      tags:
+        - Issues
+      responses:
+        200:
+          description: Issue statistics
+
+  /api/issues/count:
+    get:
+      summary: Get issue count
+      tags:
+        - Issues
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+        - in: query
+          name: priority
+          schema:
+            type: string
+      responses:
+        200:
+          description: Issue count
+
+components:
+  schemas:
+    Issue:
+      type: object
+      properties:
+        id:
+          type: integer
+        employeeId:
+          type: integer
+        typeId:
+          type: string
+        subTypeId:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [open, in_progress, resolved, closed]
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+        assignedTo:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        closedAt:
+          type: string
+          format: date-time
+        firstResponseAt:
+          type: string
+          format: date-time
+        resolvedAt:
+          type: string
+          format: date-time
+        slaBreached:
+          type: boolean
+
+    CreateIssue:
+      type: object
+      required:
+        - employeeId
+        - typeId
+        - subTypeId
+        - description
+        - priority
+      properties:
+        employeeId:
+          type: integer
+        typeId:
+          type: string
+        subTypeId:
+          type: string
+        description:
+          type: string
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+
+    UpdateIssue:
+      type: object
+      properties:
+        typeId:
+          type: string
+        subTypeId:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [open, in_progress, resolved, closed]
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+        assignedTo:
+          type: integer

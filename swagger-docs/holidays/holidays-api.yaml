@@ -1,0 +1,181 @@
+openapi: 3.0.0
+info:
+  title: Holidays API
+  version: 1.0.0
+  description: Holiday management endpoints for SLA tracking
+
+paths:
+  /api/holidays:
+    get:
+      summary: Get all holidays
+      tags:
+        - Holidays
+      responses:
+        200:
+          description: List of holidays
+
+    post:
+      summary: Create new holiday
+      tags:
+        - Holidays
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateHoliday'
+      responses:
+        201:
+          description: Holiday created successfully
+
+  /api/holidays/bulk:
+    post:
+      summary: Bulk upload holidays
+      tags:
+        - Holidays
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                holidays:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CreateHoliday'
+      responses:
+        201:
+          description: Holidays created successfully
+
+  /api/holidays/year/{year}:
+    get:
+      summary: Get holidays by year
+      tags:
+        - Holidays
+      parameters:
+        - in: path
+          name: year
+          required: true
+          schema:
+            type: integer
+            example: 2025
+      responses:
+        200:
+          description: List of holidays for the year
+
+  /api/holidays/{id}:
+    get:
+      summary: Get holiday by ID
+      tags:
+        - Holidays
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Holiday details
+        404:
+          description: Holiday not found
+
+    put:
+      summary: Update holiday
+      tags:
+        - Holidays
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateHoliday'
+      responses:
+        200:
+          description: Holiday updated successfully
+
+    delete:
+      summary: Delete holiday
+      tags:
+        - Holidays
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Holiday deleted successfully
+
+components:
+  schemas:
+    Holiday:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: Republic Day
+        date:
+          type: string
+          format: date
+          example: "2025-01-26"
+        type:
+          type: string
+          enum: [government, restricted]
+        recurring:
+          type: boolean
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateHoliday:
+      type: object
+      required:
+        - name
+        - date
+        - type
+        - recurring
+      properties:
+        name:
+          type: string
+        date:
+          type: string
+          format: date
+        type:
+          type: string
+          enum: [government, restricted]
+        recurring:
+          type: boolean
+        description:
+          type: string
+
+    UpdateHoliday:
+      type: object
+      properties:
+        name:
+          type: string
+        date:
+          type: string
+          format: date
+        type:
+          type: string
+          enum: [government, restricted]
+        recurring:
+          type: boolean
+        description:
+          type: string

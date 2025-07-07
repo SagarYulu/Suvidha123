@@ -1,0 +1,88 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Yulu Employee Issue Management System API",
+    "version": "1.0.0",
+    "description": "Comprehensive API documentation for Yulu Employee Issue Management System",
+    "contact": {
+      "name": "API Support",
+      "email": "support@yulu.bike"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Development server"
+    },
+    {
+      "url": "https://api.yulu.bike",
+      "description": "Production server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Authorization header using the Bearer scheme."
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Authentication endpoints for dashboard users and employees"
+    },
+    {
+      "name": "Employees",
+      "description": "Employee management endpoints"
+    },
+    {
+      "name": "Dashboard Users",
+      "description": "Dashboard user management endpoints"
+    },
+    {
+      "name": "Issues",
+      "description": "Issue/ticket management endpoints"
+    },
+    {
+      "name": "Comments",
+      "description": "Issue comment management endpoints"
+    },
+    {
+      "name": "Holidays",
+      "description": "Holiday management endpoints for SLA tracking"
+    },
+    {
+      "name": "Analytics",
+      "description": "Analytics and reporting endpoints"
+    },
+    {
+      "name": "SLA",
+      "description": "Service Level Agreement tracking endpoints"
+    },
+    {
+      "name": "RBAC",
+      "description": "Role-Based Access Control management"
+    },
+    {
+      "name": "Master Data",
+      "description": "Master data management endpoints"
+    },
+    {
+      "name": "Feedback",
+      "description": "Ticket feedback management endpoints"
+    },
+    {
+      "name": "Health",
+      "description": "System health check endpoints"
+    }
+  ],
+  "paths": {}
+}

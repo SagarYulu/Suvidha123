@@ -1,0 +1,163 @@
+openapi: 3.0.0
+info:
+  title: SLA API
+  version: 1.0.0
+  description: Service Level Agreement tracking endpoints
+
+paths:
+  /api/sla/metrics:
+    get:
+      summary: Get SLA metrics
+      description: Retrieve SLA compliance metrics and TAT analysis
+      tags:
+        - SLA
+      parameters:
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: priority
+          schema:
+            type: string
+            enum: [low, medium, high, critical]
+      responses:
+        200:
+          description: SLA metrics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  overall:
+                    type: object
+                    properties:
+                      totalTickets:
+                        type: integer
+                      slaCompliant:
+                        type: integer
+                      slaBreached:
+                        type: integer
+                      complianceRate:
+                        type: number
+                        format: float
+                      averageTAT:
+                        type: number
+                        format: float
+                        description: Average turn-around time in hours
+                  byPriority:
+                    type: array
+                    items:
+                      type: object
+
+  /api/sla/alerts:
+    get:
+      summary: Get SLA alerts
+      description: Retrieve tickets at risk of breaching SLA
+      tags:
+        - SLA
+      parameters:
+        - in: query
+          name: threshold
+          schema:
+            type: integer
+            default: 2
+          description: Hours before SLA breach to trigger alert
+      responses:
+        200:
+          description: SLA alerts
+
+  /api/sla/breaches:
+    get:
+      summary: Get SLA breaches
+      description: Retrieve list of tickets that breached SLA
+      tags:
+        - SLA
+      parameters:
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: priority
+          schema:
+            type: string
+      responses:
+        200:
+          description: SLA breaches
+
+  /api/sla/config:
+    get:
+      summary: Get SLA configuration
+      tags:
+        - SLA
+      responses:
+        200:
+          description: SLA configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  critical:
+                    type: object
+                    properties:
+                      responseTime:
+                        type: integer
+                        example: 1
+                      resolutionTime:
+                        type: integer
+                        example: 4
+                  high:
+                    type: object
+                    properties:
+                      responseTime:
+                        type: integer
+                        example: 2
+                      resolutionTime:
+                        type: integer
+                        example: 8
+                  medium:
+                    type: object
+                    properties:
+                      responseTime:
+                        type: integer
+                        example: 4
+                      resolutionTime:
+                        type: integer
+                        example: 24
+                  low:
+                    type: object
+                    properties:
+                      responseTime:
+                        type: integer
+                        example: 8
+                      resolutionTime:
+                        type: integer
+                        example: 48
+
+    put:
+      summary: Update SLA configuration
+      tags:
+        - SLA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: SLA configuration updated

@@ -1,0 +1,208 @@
+openapi: 3.0.0
+info:
+  title: Feedback API
+  version: 1.0.0
+  description: Ticket feedback management endpoints
+
+paths:
+  /api/tickets/{ticketId}/feedback:
+    get:
+      summary: Get ticket feedback
+      tags:
+        - Feedback
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Feedback details
+        404:
+          description: Feedback not found
+
+    post:
+      summary: Submit ticket feedback
+      tags:
+        - Feedback
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rating
+              properties:
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  example: 4
+                comment:
+                  type: string
+                  example: Great support, thank you!
+      responses:
+        201:
+          description: Feedback submitted successfully
+        400:
+          description: Invalid feedback or ticket not resolved
+        409:
+          description: Feedback already exists for this ticket
+
+    put:
+      summary: Update ticket feedback
+      tags:
+        - Feedback
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                comment:
+                  type: string
+      responses:
+        200:
+          description: Feedback updated successfully
+        404:
+          description: Feedback not found
+
+  /api/feedback/check/{ticketId}:
+    get:
+      summary: Check feedback existence
+      tags:
+        - Feedback
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Feedback existence status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exists:
+                    type: boolean
+                    example: true
+                  feedback:
+                    type: object
+
+  /api/feedback/analytics:
+    get:
+      summary: Get feedback analytics
+      tags:
+        - Feedback
+      parameters:
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: agentId
+          schema:
+            type: integer
+        - in: query
+          name: sentiment
+          schema:
+            type: string
+            enum: [positive, neutral, negative]
+      responses:
+        200:
+          description: Feedback analytics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalFeedback:
+                    type: integer
+                  sentimentDistribution:
+                    type: object
+                    properties:
+                      positive:
+                        type: integer
+                      neutral:
+                        type: integer
+                      negative:
+                        type: integer
+                  averageRating:
+                    type: number
+                    format: float
+                  feedbackByAgent:
+                    type: array
+                    items:
+                      type: object
+
+  /api/feedback/recent:
+    get:
+      summary: Get recent feedback
+      tags:
+        - Feedback
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+            maximum: 100
+      responses:
+        200:
+          description: List of recent feedback
+
+components:
+  schemas:
+    Feedback:
+      type: object
+      properties:
+        id:
+          type: integer
+        ticketId:
+          type: integer
+        employeeId:
+          type: integer
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        sentiment:
+          type: string
+          enum: [positive, neutral, negative]
+        agentId:
+          type: integer
+        agentName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time

@@ -1,0 +1,291 @@
+openapi: 3.0.0
+info:
+  title: Master Data API
+  version: 1.0.0
+  description: Master data management endpoints
+
+paths:
+  /api/master-data/roles:
+    get:
+      summary: Get all master roles
+      tags:
+        - Master Data
+      responses:
+        200:
+          description: List of master roles
+
+    post:
+      summary: Create master role
+      tags:
+        - Master Data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - category
+              properties:
+                name:
+                  type: string
+                  example: Field Supervisor
+                category:
+                  type: string
+                  enum: [employee, dashboard_user]
+                  example: employee
+      responses:
+        201:
+          description: Role created successfully
+
+  /api/master-data/roles/{id}:
+    put:
+      summary: Update master role
+      tags:
+        - Master Data
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+      responses:
+        200:
+          description: Role updated successfully
+
+    delete:
+      summary: Delete master role
+      tags:
+        - Master Data
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Role deleted successfully
+
+  /api/master-data/cities:
+    get:
+      summary: Get all cities
+      tags:
+        - Master Data
+      responses:
+        200:
+          description: List of cities
+
+    post:
+      summary: Create city
+      tags:
+        - Master Data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: Chennai
+      responses:
+        201:
+          description: City created successfully
+
+  /api/master-data/cities/{id}:
+    put:
+      summary: Update city
+      tags:
+        - Master Data
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        200:
+          description: City updated successfully
+
+    delete:
+      summary: Delete city
+      tags:
+        - Master Data
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: City deleted successfully
+
+  /api/master-data/clusters:
+    get:
+      summary: Get all clusters
+      tags:
+        - Master Data
+      parameters:
+        - in: query
+          name: city
+          schema:
+            type: string
+          description: Filter clusters by city
+      responses:
+        200:
+          description: List of clusters
+
+    post:
+      summary: Create cluster
+      tags:
+        - Master Data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - city
+              properties:
+                name:
+                  type: string
+                  example: HSR Layout
+                city:
+                  type: string
+                  example: Bangalore
+      responses:
+        201:
+          description: Cluster created successfully
+
+  /api/master-data/clusters/{id}:
+    put:
+      summary: Update cluster
+      tags:
+        - Master Data
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                city:
+                  type: string
+      responses:
+        200:
+          description: Cluster updated successfully
+
+    delete:
+      summary: Delete cluster
+      tags:
+        - Master Data
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Cluster deleted successfully
+
+  /api/master-data/audit-logs:
+    get:
+      summary: Get audit logs
+      tags:
+        - Master Data
+      parameters:
+        - in: query
+          name: entityType
+          schema:
+            type: string
+            enum: [role, city, cluster]
+        - in: query
+          name: action
+          schema:
+            type: string
+            enum: [create, update, delete]
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+      responses:
+        200:
+          description: List of audit logs
+
+components:
+  schemas:
+    MasterRole:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+          enum: [employee, dashboard_user]
+        createdAt:
+          type: string
+          format: date-time
+
+    MasterCity:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    MasterCluster:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        city:
+          type: string
+        createdAt:
+          type: string
+          format: date-time

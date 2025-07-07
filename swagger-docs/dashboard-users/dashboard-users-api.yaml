@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  title: Dashboard Users API
+  version: 1.0.0
+  description: Dashboard user management endpoints
+
+paths:
+  /api/dashboard-users:
+    get:
+      summary: Get all dashboard users
+      tags:
+        - Dashboard Users
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Search by name or email
+        - in: query
+          name: city
+          schema:
+            type: string
+          description: Filter by city
+        - in: query
+          name: role
+          schema:
+            type: string
+          description: Filter by role
+      responses:
+        200:
+          description: List of dashboard users
+
+    post:
+      summary: Create new dashboard user
+      tags:
+        - Dashboard Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDashboardUser'
+      responses:
+        201:
+          description: Dashboard user created successfully
+        400:
+          description: Bad request
+
+  /api/dashboard-users/bulk:
+    post:
+      summary: Bulk create dashboard users
+      tags:
+        - Dashboard Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CreateDashboardUser'
+      responses:
+        201:
+          description: Dashboard users created successfully
+
+  /api/dashboard-users/{id}:
+    get:
+      summary: Get dashboard user by ID
+      tags:
+        - Dashboard Users
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Dashboard user details
+        404:
+          description: Dashboard user not found
+
+    put:
+      summary: Update dashboard user
+      tags:
+        - Dashboard Users
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDashboardUser'
+      responses:
+        200:
+          description: Dashboard user updated successfully
+        404:
+          description: Dashboard user not found
+
+    delete:
+      summary: Delete dashboard user
+      tags:
+        - Dashboard Users
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Dashboard user deleted successfully
+        404:
+          description: Dashboard user not found
+
+  /api/dashboard-users/change-password:
+    post:
+      summary: Change password
+      tags:
+        - Dashboard Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - currentPassword
+                - newPassword
+              properties:
+                currentPassword:
+                  type: string
+                  format: password
+                newPassword:
+                  type: string
+                  format: password
+                  minLength: 8
+      responses:
+        200:
+          description: Password changed successfully
+        400:
+          description: Invalid current password
+        401:
+          description: Unauthorized
+
+components:
+  schemas:
+    DashboardUser:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        city:
+          type: string
+        role:
+          type: string
+        isActive:
+          type: boolean
+        emailVerified:
+          type: boolean
+        department:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateDashboardUser:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - city
+        - role
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+        city:
+          type: string
+        role:
+          type: string
+        department:
+          type: string
+
+    UpdateDashboardUser:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        city:
+          type: string
+        role:
+          type: string
+        isActive:
+          type: boolean
+        department:
+          type: string

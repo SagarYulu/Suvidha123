@@ -1,0 +1,172 @@
+openapi: 3.0.0
+info:
+  title: Comments API
+  version: 1.0.0
+  description: Issue comment management endpoints
+
+paths:
+  /api/issues/{issueId}/comments:
+    get:
+      summary: Get issue comments
+      description: Retrieve all comments for a specific issue
+      tags:
+        - Comments
+      parameters:
+        - in: path
+          name: issueId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: List of comments
+        404:
+          description: Issue not found
+
+    post:
+      summary: Add comment to issue
+      tags:
+        - Comments
+      parameters:
+        - in: path
+          name: issueId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+                  example: We are looking into this issue
+      responses:
+        201:
+          description: Comment added successfully
+        404:
+          description: Issue not found
+
+  /api/issues/{issueId}/internal-comments:
+    get:
+      summary: Get internal comments
+      description: Retrieve internal comments (visible only to dashboard users)
+      tags:
+        - Comments
+      parameters:
+        - in: path
+          name: issueId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: List of internal comments
+        403:
+          description: Forbidden - insufficient permissions
+
+    post:
+      summary: Add internal comment
+      description: Add an internal comment (visible only to dashboard users)
+      tags:
+        - Comments
+      parameters:
+        - in: path
+          name: issueId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+      responses:
+        201:
+          description: Internal comment added successfully
+        403:
+          description: Forbidden - insufficient permissions
+
+  /api/comments/{id}:
+    put:
+      summary: Update comment
+      tags:
+        - Comments
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+      responses:
+        200:
+          description: Comment updated successfully
+        404:
+          description: Comment not found
+
+    delete:
+      summary: Delete comment
+      tags:
+        - Comments
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Comment deleted successfully
+        404:
+          description: Comment not found
+
+components:
+  schemas:
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+        issueId:
+          type: integer
+        commenterId:
+          type: integer
+        commenterType:
+          type: string
+          enum: [dashboard_user, employee]
+        content:
+          type: string
+        isInternal:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        commenter:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string

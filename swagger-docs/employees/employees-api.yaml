@@ -1,0 +1,253 @@
+openapi: 3.0.0
+info:
+  title: Employees API
+  version: 1.0.0
+  description: Employee management endpoints
+
+paths:
+  /api/employees:
+    get:
+      summary: Get all employees
+      description: Retrieve a list of all employees with optional filters
+      tags:
+        - Employees
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Search by name, email, phone, or employee ID
+        - in: query
+          name: city
+          schema:
+            type: string
+          description: Filter by city
+        - in: query
+          name: role
+          schema:
+            type: string
+          description: Filter by role
+        - in: query
+          name: cluster
+          schema:
+            type: string
+          description: Filter by cluster
+      responses:
+        200:
+          description: List of employees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+
+    post:
+      summary: Create new employee
+      tags:
+        - Employees
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEmployee'
+      responses:
+        201:
+          description: Employee created successfully
+
+  /api/employees/bulk:
+    post:
+      summary: Bulk create employees
+      tags:
+        - Employees
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employees:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CreateEmployee'
+      responses:
+        201:
+          description: Employees created successfully
+
+  /api/employees/{id}:
+    get:
+      summary: Get employee by ID
+      tags:
+        - Employees
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Employee details
+        404:
+          description: Employee not found
+
+    put:
+      summary: Update employee
+      tags:
+        - Employees
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEmployee'
+      responses:
+        200:
+          description: Employee updated successfully
+
+    delete:
+      summary: Delete employee
+      tags:
+        - Employees
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Employee deleted successfully
+
+  /api/employee/profile:
+    get:
+      summary: Get employee profile
+      description: Get the logged-in employee's profile
+      tags:
+        - Employees
+      responses:
+        200:
+          description: Employee profile
+
+components:
+  schemas:
+    Employee:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        empId:
+          type: string
+        city:
+          type: string
+        cluster:
+          type: string
+        manager:
+          type: string
+        role:
+          type: string
+        dateOfJoining:
+          type: string
+          format: date
+        bloodGroup:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        accountNumber:
+          type: string
+        ifscCode:
+          type: string
+        userId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateEmployee:
+      type: object
+      required:
+        - name
+        - email
+        - phone
+        - empId
+        - password
+        - city
+        - role
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        empId:
+          type: string
+        password:
+          type: string
+        city:
+          type: string
+        cluster:
+          type: string
+        manager:
+          type: string
+        role:
+          type: string
+        dateOfJoining:
+          type: string
+          format: date
+        bloodGroup:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        accountNumber:
+          type: string
+        ifscCode:
+          type: string
+        userId:
+          type: integer
+
+    UpdateEmployee:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        city:
+          type: string
+        cluster:
+          type: string
+        manager:
+          type: string
+        role:
+          type: string
+        bloodGroup:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        accountNumber:
+          type: string
+        ifscCode:
+          type: string

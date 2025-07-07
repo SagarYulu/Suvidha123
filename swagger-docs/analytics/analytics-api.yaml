@@ -1,0 +1,146 @@
+openapi: 3.0.0
+info:
+  title: Analytics API
+  version: 1.0.0
+  description: Analytics and reporting endpoints
+
+paths:
+  /api/analytics/dashboard:
+    get:
+      summary: Get dashboard analytics
+      tags:
+        - Analytics
+      parameters:
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Dashboard analytics data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalTickets:
+                    type: integer
+                  openTickets:
+                    type: integer
+                  resolvedTickets:
+                    type: integer
+                  averageResolutionTime:
+                    type: number
+                    format: float
+                    description: Average resolution time in hours
+                  ticketsByStatus:
+                    type: object
+                  ticketsByPriority:
+                    type: object
+
+  /api/analytics/tickets-by-type:
+    get:
+      summary: Get tickets by type
+      description: Analyze ticket distribution by type and subtype
+      tags:
+        - Analytics
+      responses:
+        200:
+          description: Ticket distribution by type
+
+  /api/analytics/tickets-by-city:
+    get:
+      summary: Get tickets by city
+      tags:
+        - Analytics
+      responses:
+        200:
+          description: Ticket distribution by city
+
+  /api/analytics/agent-performance:
+    get:
+      summary: Get agent performance metrics
+      tags:
+        - Analytics
+      parameters:
+        - in: query
+          name: agentId
+          schema:
+            type: integer
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Agent performance metrics
+
+  /api/analytics/trends:
+    get:
+      summary: Get ticket trends
+      tags:
+        - Analytics
+      parameters:
+        - in: query
+          name: period
+          schema:
+            type: string
+            enum: [daily, weekly, monthly]
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Ticket trends data
+
+  /api/analytics/export:
+    post:
+      summary: Export analytics data
+      tags:
+        - Analytics
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                format:
+                  type: string
+                  enum: [csv, excel, pdf]
+                reportType:
+                  type: string
+                  enum: [dashboard, tickets, agents, trends]
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+      responses:
+        200:
+          description: Exported file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
