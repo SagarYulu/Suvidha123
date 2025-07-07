@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./config/vite";
+import { setupSwagger } from "../swagger/config";
 import dotenv from "dotenv";
 
 // Load environment variables from .env file
@@ -45,6 +46,9 @@ app.use((req, res, next) => {
 
 (async () => {
   const server = await registerRoutes(app);
+
+  // Setup Swagger API documentation
+  setupSwagger(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

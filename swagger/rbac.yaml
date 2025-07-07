@@ -1,0 +1,268 @@
+tags:
+  - name: RBAC
+    description: Role-Based Access Control management
+
+paths:
+  /api/rbac/roles:
+    get:
+      tags:
+        - RBAC
+      summary: Get all roles
+      description: Retrieve all RBAC roles
+      responses:
+        200:
+          description: List of roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+
+    post:
+      tags:
+        - RBAC
+      summary: Create new role
+      description: Create a new RBAC role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - description
+              properties:
+                name:
+                  type: string
+                  example: Regional Manager
+                description:
+                  type: string
+                  example: Manages operations for a specific region
+      responses:
+        201:
+          description: Role created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+
+  /api/rbac/roles/{id}:
+    get:
+      tags:
+        - RBAC
+      summary: Get role by ID
+      description: Retrieve a specific role
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Role details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+
+    put:
+      tags:
+        - RBAC
+      summary: Update role
+      description: Update an existing role
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        200:
+          description: Role updated successfully
+
+    delete:
+      tags:
+        - RBAC
+      summary: Delete role
+      description: Delete a role
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Role deleted successfully
+
+  /api/rbac/permissions:
+    get:
+      tags:
+        - RBAC
+      summary: Get all permissions
+      description: Retrieve all available permissions
+      responses:
+        200:
+          description: List of permissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+
+  /api/rbac/roles/{roleId}/permissions:
+    get:
+      tags:
+        - RBAC
+      summary: Get role permissions
+      description: Retrieve permissions for a specific role
+      parameters:
+        - in: path
+          name: roleId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Role permissions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Permission'
+
+    put:
+      tags:
+        - RBAC
+      summary: Update role permissions
+      description: Update permissions for a role
+      parameters:
+        - in: path
+          name: roleId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                permissions:
+                  type: array
+                  items:
+                    type: integer
+                  description: Array of permission IDs
+      responses:
+        200:
+          description: Permissions updated successfully
+
+  /api/rbac/users/{userId}/roles:
+    get:
+      tags:
+        - RBAC
+      summary: Get user roles
+      description: Retrieve roles assigned to a user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: User roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+
+    put:
+      tags:
+        - RBAC
+      summary: Assign roles to user
+      description: Update roles assigned to a user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roleIds:
+                  type: array
+                  items:
+                    type: integer
+                  description: Array of role IDs to assign
+      responses:
+        200:
+          description: Roles assigned successfully
+
+components:
+  schemas:
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Super Admin
+        description:
+          type: string
+          example: Full system access with all permissions
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+
+    Permission:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: access:dashboard
+        description:
+          type: string
+          example: Access to main dashboard
+        category:
+          type: string
+          example: access
+        createdAt:
+          type: string
+          format: date-time

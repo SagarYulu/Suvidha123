@@ -1,0 +1,362 @@
+tags:
+  - name: Employees
+    description: Employee management endpoints
+
+paths:
+  /api/employees:
+    get:
+      tags:
+        - Employees
+      summary: Get all employees
+      description: Retrieve a list of all employees with optional filters
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Search by name, email, phone, or employee ID
+        - in: query
+          name: city
+          schema:
+            type: string
+          description: Filter by city
+        - in: query
+          name: role
+          schema:
+            type: string
+          description: Filter by role
+        - in: query
+          name: cluster
+          schema:
+            type: string
+          description: Filter by cluster
+      responses:
+        200:
+          description: List of employees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      tags:
+        - Employees
+      summary: Create new employee
+      description: Create a new employee record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEmployee'
+      responses:
+        201:
+          description: Employee created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/Forbidden'
+
+  /api/employees/bulk:
+    post:
+      tags:
+        - Employees
+      summary: Bulk create employees
+      description: Create multiple employees at once
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employees:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CreateEmployee'
+      responses:
+        201:
+          description: Employees created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  created:
+                    type: integer
+                    description: Number of employees created
+                  failed:
+                    type: integer
+                    description: Number of failed creations
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        row:
+                          type: integer
+                        error:
+                          type: string
+
+  /api/employees/{id}:
+    get:
+      tags:
+        - Employees
+      summary: Get employee by ID
+      description: Retrieve a specific employee by their ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Employee ID
+      responses:
+        200:
+          description: Employee details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - Employees
+      summary: Update employee
+      description: Update an existing employee's information
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Employee ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEmployee'
+      responses:
+        200:
+          description: Employee updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Employees
+      summary: Delete employee
+      description: Delete an employee record
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Employee ID
+      responses:
+        200:
+          description: Employee deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /api/employee/profile:
+    get:
+      tags:
+        - Employees
+      summary: Get employee profile
+      description: Get the logged-in employee's profile
+      responses:
+        200:
+          description: Employee profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  schemas:
+    Employee:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          format: email
+          example: john.doe@yulu.bike
+        phone:
+          type: string
+          example: "9876543210"
+        empId:
+          type: string
+          example: YUL001
+        city:
+          type: string
+          example: Bangalore
+        cluster:
+          type: string
+          example: CBD
+        manager:
+          type: string
+          example: Jane Smith
+        role:
+          type: string
+          example: Mechanic
+        dateOfJoining:
+          type: string
+          format: date
+          example: "2023-01-15"
+        bloodGroup:
+          type: string
+          example: B+
+        dateOfBirth:
+          type: string
+          format: date
+          example: "1990-05-20"
+        accountNumber:
+          type: string
+          example: "1234567890"
+        ifscCode:
+          type: string
+          example: SBIN0001234
+        userId:
+          type: integer
+          example: 12345
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateEmployee:
+      type: object
+      required:
+        - name
+        - email
+        - phone
+        - empId
+        - password
+        - city
+        - role
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        empId:
+          type: string
+        password:
+          type: string
+        city:
+          type: string
+        cluster:
+          type: string
+        manager:
+          type: string
+        role:
+          type: string
+        dateOfJoining:
+          type: string
+          format: date
+        bloodGroup:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        accountNumber:
+          type: string
+        ifscCode:
+          type: string
+        userId:
+          type: integer
+
+    UpdateEmployee:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        city:
+          type: string
+        cluster:
+          type: string
+        manager:
+          type: string
+        role:
+          type: string
+        bloodGroup:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        accountNumber:
+          type: string
+        ifscCode:
+          type: string
+
+  responses:
+    Unauthorized:
+      description: Unauthorized - Missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    Forbidden:
+      description: Forbidden - Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    BadRequest:
+      description: Bad request - Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

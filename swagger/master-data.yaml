@@ -1,0 +1,385 @@
+tags:
+  - name: Master Data
+    description: Master data management endpoints
+
+paths:
+  /api/master-data/roles:
+    get:
+      tags:
+        - Master Data
+      summary: Get all master roles
+      description: Retrieve all roles from master data
+      responses:
+        200:
+          description: List of master roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MasterRole'
+
+    post:
+      tags:
+        - Master Data
+      summary: Create master role
+      description: Create a new role in master data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - category
+              properties:
+                name:
+                  type: string
+                  example: Field Supervisor
+                category:
+                  type: string
+                  enum: [employee, dashboard_user]
+                  example: employee
+      responses:
+        201:
+          description: Role created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterRole'
+
+  /api/master-data/roles/{id}:
+    put:
+      tags:
+        - Master Data
+      summary: Update master role
+      description: Update an existing role
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                category:
+                  type: string
+      responses:
+        200:
+          description: Role updated successfully
+
+    delete:
+      tags:
+        - Master Data
+      summary: Delete master role
+      description: Delete a role from master data
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Role deleted successfully
+
+  /api/master-data/cities:
+    get:
+      tags:
+        - Master Data
+      summary: Get all cities
+      description: Retrieve all cities from master data
+      responses:
+        200:
+          description: List of cities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MasterCity'
+
+    post:
+      tags:
+        - Master Data
+      summary: Create city
+      description: Create a new city in master data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: Chennai
+      responses:
+        201:
+          description: City created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterCity'
+
+  /api/master-data/cities/{id}:
+    put:
+      tags:
+        - Master Data
+      summary: Update city
+      description: Update an existing city
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        200:
+          description: City updated successfully
+
+    delete:
+      tags:
+        - Master Data
+      summary: Delete city
+      description: Delete a city from master data
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: City deleted successfully
+
+  /api/master-data/clusters:
+    get:
+      tags:
+        - Master Data
+      summary: Get all clusters
+      description: Retrieve all clusters from master data
+      parameters:
+        - in: query
+          name: city
+          schema:
+            type: string
+          description: Filter clusters by city
+      responses:
+        200:
+          description: List of clusters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MasterCluster'
+
+    post:
+      tags:
+        - Master Data
+      summary: Create cluster
+      description: Create a new cluster in master data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - city
+              properties:
+                name:
+                  type: string
+                  example: HSR Layout
+                city:
+                  type: string
+                  example: Bangalore
+      responses:
+        201:
+          description: Cluster created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MasterCluster'
+
+  /api/master-data/clusters/{id}:
+    put:
+      tags:
+        - Master Data
+      summary: Update cluster
+      description: Update an existing cluster
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                city:
+                  type: string
+      responses:
+        200:
+          description: Cluster updated successfully
+
+    delete:
+      tags:
+        - Master Data
+      summary: Delete cluster
+      description: Delete a cluster from master data
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Cluster deleted successfully
+
+  /api/master-data/audit-logs:
+    get:
+      tags:
+        - Master Data
+      summary: Get audit logs
+      description: Retrieve audit logs for master data changes
+      parameters:
+        - in: query
+          name: entityType
+          schema:
+            type: string
+            enum: [role, city, cluster]
+          description: Filter by entity type
+        - in: query
+          name: action
+          schema:
+            type: string
+            enum: [create, update, delete]
+          description: Filter by action
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+          description: Number of records to return
+      responses:
+        200:
+          description: List of audit logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+
+components:
+  schemas:
+    MasterRole:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Mechanic
+        category:
+          type: string
+          enum: [employee, dashboard_user]
+          example: employee
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    MasterCity:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Bangalore
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    MasterCluster:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: CBD
+        city:
+          type: string
+          example: Bangalore
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    AuditLog:
+      type: object
+      properties:
+        id:
+          type: integer
+        entityType:
+          type: string
+          enum: [role, city, cluster]
+        entityId:
+          type: integer
+        action:
+          type: string
+          enum: [create, update, delete]
+        oldValue:
+          type: object
+          nullable: true
+        newValue:
+          type: object
+          nullable: true
+        userId:
+          type: integer
+        userEmail:
+          type: string
+        createdAt:
+          type: string
+          format: date-time

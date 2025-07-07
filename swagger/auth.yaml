@@ -1,0 +1,187 @@
+tags:
+  - name: Authentication
+    description: Authentication endpoints for dashboard users and employees
+
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login for dashboard users and employees
+      description: Unified login endpoint that automatically detects user type
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User email address
+                  example: sagar.km@yulu.bike
+                password:
+                  type: string
+                  format: password
+                  description: User password
+                  example: admin123
+      responses:
+        200:
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT authentication token
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 6
+                      email:
+                        type: string
+                        example: sagar.km@yulu.bike
+                      name:
+                        type: string
+                        example: sagar K M
+                      role:
+                        type: string
+                        example: Super Admin
+                      userType:
+                        type: string
+                        enum: [dashboard_user, employee]
+                        example: dashboard_user
+        400:
+          description: Bad request - missing email or password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/mobile-verify:
+    post:
+      tags:
+        - Authentication
+      summary: Mobile employee verification
+      description: Authenticate mobile app users with email and employee ID
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - empId
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Employee email address
+                  example: chinnumalleshchinnu@gmail.com
+                empId:
+                  type: string
+                  description: Employee ID
+                  example: XPH1884
+      responses:
+        200:
+          description: Verification successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT authentication token
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      name:
+                        type: string
+                      empId:
+                        type: string
+                      userType:
+                        type: string
+                        example: employee
+        401:
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/verify:
+    get:
+      tags:
+        - Authentication
+      summary: Verify JWT token
+      description: Verify the validity of a JWT token
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      responses:
+        200:
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                    example: true
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      userType:
+                        type: string
+        401:
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout user
+      description: Logout current user (client-side token removal)
+      responses:
+        200:
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'

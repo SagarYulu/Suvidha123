@@ -1,0 +1,277 @@
+tags:
+  - name: Feedback
+    description: Ticket feedback management endpoints
+
+paths:
+  /api/tickets/{ticketId}/feedback:
+    get:
+      tags:
+        - Feedback
+      summary: Get ticket feedback
+      description: Retrieve feedback for a specific ticket
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema:
+            type: integer
+          description: Ticket/Issue ID
+      responses:
+        200:
+          description: Feedback details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+        404:
+          description: Feedback not found
+
+    post:
+      tags:
+        - Feedback
+      summary: Submit ticket feedback
+      description: Submit feedback for a resolved ticket
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema:
+            type: integer
+          description: Ticket/Issue ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFeedback'
+      responses:
+        201:
+          description: Feedback submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+        400:
+          description: Invalid feedback or ticket not resolved
+        409:
+          description: Feedback already exists for this ticket
+
+    put:
+      tags:
+        - Feedback
+      summary: Update ticket feedback
+      description: Update existing feedback
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema:
+            type: integer
+          description: Ticket/Issue ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeedback'
+      responses:
+        200:
+          description: Feedback updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+        404:
+          description: Feedback not found
+
+  /api/feedback/check/{ticketId}:
+    get:
+      tags:
+        - Feedback
+      summary: Check feedback existence
+      description: Check if feedback exists for a ticket
+      parameters:
+        - in: path
+          name: ticketId
+          required: true
+          schema:
+            type: integer
+          description: Ticket/Issue ID
+      responses:
+        200:
+          description: Feedback existence status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  exists:
+                    type: boolean
+                    example: true
+                  feedback:
+                    $ref: '#/components/schemas/Feedback'
+
+  /api/feedback/analytics:
+    get:
+      tags:
+        - Feedback
+      summary: Get feedback analytics
+      description: Retrieve feedback analytics and sentiment analysis
+      parameters:
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+          description: Start date for analytics
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+          description: End date for analytics
+        - in: query
+          name: agentId
+          schema:
+            type: integer
+          description: Filter by agent ID
+        - in: query
+          name: sentiment
+          schema:
+            type: string
+            enum: [positive, neutral, negative]
+          description: Filter by sentiment
+      responses:
+        200:
+          description: Feedback analytics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalFeedback:
+                    type: integer
+                    example: 342
+                  sentimentDistribution:
+                    type: object
+                    properties:
+                      positive:
+                        type: integer
+                        example: 198
+                      neutral:
+                        type: integer
+                        example: 89
+                      negative:
+                        type: integer
+                        example: 55
+                  averageRating:
+                    type: number
+                    format: float
+                    example: 4.2
+                  feedbackByAgent:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        agentId:
+                          type: integer
+                        agentName:
+                          type: string
+                        totalFeedback:
+                          type: integer
+                        averageRating:
+                          type: number
+                          format: float
+                        sentimentBreakdown:
+                          type: object
+
+  /api/feedback/recent:
+    get:
+      tags:
+        - Feedback
+      summary: Get recent feedback
+      description: Retrieve most recent feedback entries
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+            maximum: 100
+          description: Number of feedback entries to retrieve
+      responses:
+        200:
+          description: List of recent feedback
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feedback'
+
+components:
+  schemas:
+    Feedback:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        ticketId:
+          type: integer
+          example: 5
+        employeeId:
+          type: integer
+          example: 8
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 4
+        comment:
+          type: string
+          example: Issue was resolved quickly and professionally
+        sentiment:
+          type: string
+          enum: [positive, neutral, negative]
+          example: positive
+        agentId:
+          type: integer
+          example: 6
+          nullable: true
+        agentName:
+          type: string
+          example: sagar K M
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateFeedback:
+      type: object
+      required:
+        - rating
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 4
+        comment:
+          type: string
+          example: Great support, thank you!
+          maxLength: 1000
+
+    UpdateFeedback:
+      type: object
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+          maxLength: 1000

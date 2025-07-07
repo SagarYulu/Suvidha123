@@ -1,0 +1,281 @@
+tags:
+  - name: Dashboard Users
+    description: Dashboard user management endpoints
+
+paths:
+  /api/dashboard-users:
+    get:
+      tags:
+        - Dashboard Users
+      summary: Get all dashboard users
+      description: Retrieve a list of all dashboard users with optional filters
+      parameters:
+        - in: query
+          name: search
+          schema:
+            type: string
+          description: Search by name or email
+        - in: query
+          name: city
+          schema:
+            type: string
+          description: Filter by city
+        - in: query
+          name: role
+          schema:
+            type: string
+          description: Filter by role
+      responses:
+        200:
+          description: List of dashboard users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DashboardUser'
+
+    post:
+      tags:
+        - Dashboard Users
+      summary: Create new dashboard user
+      description: Create a new dashboard user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDashboardUser'
+      responses:
+        201:
+          description: Dashboard user created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardUser'
+        400:
+          $ref: '#/components/responses/BadRequest'
+
+  /api/dashboard-users/bulk:
+    post:
+      tags:
+        - Dashboard Users
+      summary: Bulk create dashboard users
+      description: Create multiple dashboard users at once
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CreateDashboardUser'
+      responses:
+        201:
+          description: Dashboard users created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  created:
+                    type: integer
+                  failed:
+                    type: integer
+                  errors:
+                    type: array
+                    items:
+                      type: object
+
+  /api/dashboard-users/{id}:
+    get:
+      tags:
+        - Dashboard Users
+      summary: Get dashboard user by ID
+      description: Retrieve a specific dashboard user by their ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Dashboard user ID
+      responses:
+        200:
+          description: Dashboard user details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardUser'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags:
+        - Dashboard Users
+      summary: Update dashboard user
+      description: Update an existing dashboard user's information
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Dashboard user ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDashboardUser'
+      responses:
+        200:
+          description: Dashboard user updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardUser'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Dashboard Users
+      summary: Delete dashboard user
+      description: Delete a dashboard user account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Dashboard user ID
+      responses:
+        200:
+          description: Dashboard user deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /api/dashboard-users/change-password:
+    post:
+      tags:
+        - Dashboard Users
+      summary: Change password
+      description: Change password for the logged-in dashboard user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - currentPassword
+                - newPassword
+              properties:
+                currentPassword:
+                  type: string
+                  format: password
+                newPassword:
+                  type: string
+                  format: password
+                  minLength: 8
+      responses:
+        200:
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        400:
+          description: Invalid current password
+        401:
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  schemas:
+    DashboardUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 6
+        name:
+          type: string
+          example: sagar K M
+        email:
+          type: string
+          format: email
+          example: sagar.km@yulu.bike
+        city:
+          type: string
+          example: Bangalore
+        role:
+          type: string
+          example: Super Admin
+        isActive:
+          type: boolean
+          example: true
+        emailVerified:
+          type: boolean
+          example: true
+        department:
+          type: string
+          example: IT
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateDashboardUser:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - city
+        - role
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+        city:
+          type: string
+        role:
+          type: string
+        department:
+          type: string
+          nullable: true
+
+    UpdateDashboardUser:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        city:
+          type: string
+        role:
+          type: string
+        isActive:
+          type: boolean
+        department:
+          type: string
+          nullable: true

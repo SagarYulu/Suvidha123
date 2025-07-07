@@ -1,0 +1,226 @@
+tags:
+  - name: Comments
+    description: Issue comment management endpoints
+
+paths:
+  /api/issues/{issueId}/comments:
+    get:
+      tags:
+        - Comments
+      summary: Get issue comments
+      description: Retrieve all comments for a specific issue
+      parameters:
+        - in: path
+          name: issueId
+          required: true
+          schema:
+            type: integer
+          description: Issue ID
+      responses:
+        200:
+          description: List of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        404:
+          description: Issue not found
+
+    post:
+      tags:
+        - Comments
+      summary: Add comment to issue
+      description: Add a new comment to an issue
+      parameters:
+        - in: path
+          name: issueId
+          required: true
+          schema:
+            type: integer
+          description: Issue ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+                  description: Comment content
+                  example: We are looking into this issue
+      responses:
+        201:
+          description: Comment added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        404:
+          description: Issue not found
+
+  /api/issues/{issueId}/internal-comments:
+    get:
+      tags:
+        - Comments
+      summary: Get internal comments
+      description: Retrieve internal comments (visible only to dashboard users)
+      parameters:
+        - in: path
+          name: issueId
+          required: true
+          schema:
+            type: integer
+          description: Issue ID
+      responses:
+        200:
+          description: List of internal comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalComment'
+        403:
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      tags:
+        - Comments
+      summary: Add internal comment
+      description: Add an internal comment (visible only to dashboard users)
+      parameters:
+        - in: path
+          name: issueId
+          required: true
+          schema:
+            type: integer
+          description: Issue ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+                  description: Internal comment content
+      responses:
+        201:
+          description: Internal comment added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalComment'
+        403:
+          $ref: '#/components/responses/Forbidden'
+
+  /api/comments/{id}:
+    put:
+      tags:
+        - Comments
+      summary: Update comment
+      description: Update an existing comment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Comment ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: Updated comment content
+      responses:
+        200:
+          description: Comment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Comments
+      summary: Delete comment
+      description: Delete a comment
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: Comment ID
+      responses:
+        200:
+          description: Comment deleted successfully
+        404:
+          $ref: '#/components/responses/NotFound'
+
+components:
+  schemas:
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        issueId:
+          type: integer
+          example: 5
+        commenterId:
+          type: integer
+          example: 6
+        commenterType:
+          type: string
+          enum: [dashboard_user, employee]
+          example: dashboard_user
+        content:
+          type: string
+          example: We are working on resolving this issue
+        isInternal:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        commenter:
+          type: object
+          properties:
+            name:
+              type: string
+              example: sagar K M
+            email:
+              type: string
+              example: sagar.km@yulu.bike
+
+    InternalComment:
+      allOf:
+        - $ref: '#/components/schemas/Comment'
+        - type: object
+          properties:
+            isInternal:
+              type: boolean
+              enum: [true]
+              example: true

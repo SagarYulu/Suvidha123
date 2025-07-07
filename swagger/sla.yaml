@@ -1,0 +1,288 @@
+tags:
+  - name: SLA
+    description: Service Level Agreement tracking endpoints
+
+paths:
+  /api/sla/metrics:
+    get:
+      tags:
+        - SLA
+      summary: Get SLA metrics
+      description: Retrieve SLA compliance metrics and TAT analysis
+      parameters:
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+          description: Start date for metrics
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+          description: End date for metrics
+        - in: query
+          name: priority
+          schema:
+            type: string
+            enum: [low, medium, high, critical]
+          description: Filter by priority
+      responses:
+        200:
+          description: SLA metrics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  overall:
+                    type: object
+                    properties:
+                      totalTickets:
+                        type: integer
+                        example: 245
+                      slaCompliant:
+                        type: integer
+                        example: 198
+                      slaBreached:
+                        type: integer
+                        example: 47
+                      complianceRate:
+                        type: number
+                        format: float
+                        example: 80.82
+                        description: Compliance percentage
+                      averageTAT:
+                        type: number
+                        format: float
+                        example: 18.5
+                        description: Average turn-around time in hours
+                  byPriority:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        priority:
+                          type: string
+                        slaTarget:
+                          type: object
+                          properties:
+                            responseTime:
+                              type: integer
+                              description: Response time in hours
+                            resolutionTime:
+                              type: integer
+                              description: Resolution time in hours
+                        metrics:
+                          type: object
+                          properties:
+                            totalTickets:
+                              type: integer
+                            compliant:
+                              type: integer
+                            breached:
+                              type: integer
+                            averageTAT:
+                              type: number
+                              format: float
+
+  /api/sla/alerts:
+    get:
+      tags:
+        - SLA
+      summary: Get SLA alerts
+      description: Retrieve tickets at risk of breaching SLA
+      parameters:
+        - in: query
+          name: threshold
+          schema:
+            type: integer
+            default: 2
+          description: Hours before SLA breach to trigger alert
+      responses:
+        200:
+          description: SLA alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    issueId:
+                      type: integer
+                    priority:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    timeRemaining:
+                      type: number
+                      format: float
+                      description: Hours remaining before SLA breach
+                    slaTarget:
+                      type: integer
+                      description: SLA target hours
+                    status:
+                      type: string
+                    assignedTo:
+                      type: string
+                      nullable: true
+
+  /api/sla/breaches:
+    get:
+      tags:
+        - SLA
+      summary: Get SLA breaches
+      description: Retrieve list of tickets that breached SLA
+      parameters:
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: priority
+          schema:
+            type: string
+      responses:
+        200:
+          description: SLA breaches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    issueId:
+                      type: integer
+                    priority:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    breachedAt:
+                      type: string
+                      format: date-time
+                    breachDuration:
+                      type: number
+                      format: float
+                      description: Hours exceeded beyond SLA
+                    assignedTo:
+                      type: string
+                      nullable: true
+
+  /api/sla/config:
+    get:
+      tags:
+        - SLA
+      summary: Get SLA configuration
+      description: Retrieve current SLA configuration by priority
+      responses:
+        200:
+          description: SLA configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  critical:
+                    type: object
+                    properties:
+                      responseTime:
+                        type: integer
+                        example: 1
+                        description: Hours
+                      resolutionTime:
+                        type: integer
+                        example: 4
+                        description: Hours
+                  high:
+                    type: object
+                    properties:
+                      responseTime:
+                        type: integer
+                        example: 2
+                      resolutionTime:
+                        type: integer
+                        example: 8
+                  medium:
+                    type: object
+                    properties:
+                      responseTime:
+                        type: integer
+                        example: 4
+                      resolutionTime:
+                        type: integer
+                        example: 24
+                  low:
+                    type: object
+                    properties:
+                      responseTime:
+                        type: integer
+                        example: 8
+                      resolutionTime:
+                        type: integer
+                        example: 48
+
+    put:
+      tags:
+        - SLA
+      summary: Update SLA configuration
+      description: Update SLA targets for different priorities
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SLAConfig'
+      responses:
+        200:
+          description: SLA configuration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+
+components:
+  schemas:
+    SLAConfig:
+      type: object
+      properties:
+        critical:
+          type: object
+          properties:
+            responseTime:
+              type: integer
+              minimum: 1
+            resolutionTime:
+              type: integer
+              minimum: 1
+        high:
+          type: object
+          properties:
+            responseTime:
+              type: integer
+            resolutionTime:
+              type: integer
+        medium:
+          type: object
+          properties:
+            responseTime:
+              type: integer
+            resolutionTime:
+              type: integer
+        low:
+          type: object
+          properties:
+            responseTime:
+              type: integer
+            resolutionTime:
+              type: integer

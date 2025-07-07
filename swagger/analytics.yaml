@@ -1,0 +1,252 @@
+tags:
+  - name: Analytics
+    description: Analytics and reporting endpoints
+
+paths:
+  /api/analytics/dashboard:
+    get:
+      tags:
+        - Analytics
+      summary: Get dashboard analytics
+      description: Retrieve comprehensive dashboard analytics
+      parameters:
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+          description: Start date for analytics
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+          description: End date for analytics
+      responses:
+        200:
+          description: Dashboard analytics data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalTickets:
+                    type: integer
+                    example: 156
+                  openTickets:
+                    type: integer
+                    example: 42
+                  resolvedTickets:
+                    type: integer
+                    example: 98
+                  averageResolutionTime:
+                    type: number
+                    format: float
+                    example: 24.5
+                    description: Average resolution time in hours
+                  ticketsByStatus:
+                    type: object
+                    properties:
+                      open:
+                        type: integer
+                      in_progress:
+                        type: integer
+                      resolved:
+                        type: integer
+                      closed:
+                        type: integer
+                  ticketsByPriority:
+                    type: object
+                    properties:
+                      low:
+                        type: integer
+                      medium:
+                        type: integer
+                      high:
+                        type: integer
+                      critical:
+                        type: integer
+
+  /api/analytics/tickets-by-type:
+    get:
+      tags:
+        - Analytics
+      summary: Get tickets by type
+      description: Analyze ticket distribution by type and subtype
+      responses:
+        200:
+          description: Ticket distribution by type
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      example: salary
+                    count:
+                      type: integer
+                      example: 45
+                    subtypes:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          subtype:
+                            type: string
+                            example: increment
+                          count:
+                            type: integer
+                            example: 20
+
+  /api/analytics/tickets-by-city:
+    get:
+      tags:
+        - Analytics
+      summary: Get tickets by city
+      description: Analyze ticket distribution by city
+      responses:
+        200:
+          description: Ticket distribution by city
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    city:
+                      type: string
+                      example: Bangalore
+                    count:
+                      type: integer
+                      example: 87
+
+  /api/analytics/agent-performance:
+    get:
+      tags:
+        - Analytics
+      summary: Get agent performance metrics
+      description: Analyze performance metrics for dashboard users
+      parameters:
+        - in: query
+          name: agentId
+          schema:
+            type: integer
+          description: Filter by specific agent ID
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Agent performance metrics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    agentId:
+                      type: integer
+                    agentName:
+                      type: string
+                    ticketsResolved:
+                      type: integer
+                    averageResolutionTime:
+                      type: number
+                      format: float
+                    satisfactionScore:
+                      type: number
+                      format: float
+
+  /api/analytics/trends:
+    get:
+      tags:
+        - Analytics
+      summary: Get ticket trends
+      description: Analyze ticket trends over time
+      parameters:
+        - in: query
+          name: period
+          schema:
+            type: string
+            enum: [daily, weekly, monthly]
+          description: Aggregation period
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        200:
+          description: Ticket trends data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      format: date
+                    created:
+                      type: integer
+                    resolved:
+                      type: integer
+                    closed:
+                      type: integer
+
+  /api/analytics/export:
+    post:
+      tags:
+        - Analytics
+      summary: Export analytics data
+      description: Export analytics data in various formats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                format:
+                  type: string
+                  enum: [csv, excel, pdf]
+                  description: Export format
+                reportType:
+                  type: string
+                  enum: [dashboard, tickets, agents, trends]
+                  description: Type of report to export
+                startDate:
+                  type: string
+                  format: date
+                endDate:
+                  type: string
+                  format: date
+      responses:
+        200:
+          description: Exported file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+            text/csv:
+              schema:
+                type: string
