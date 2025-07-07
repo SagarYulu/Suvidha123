@@ -54,19 +54,26 @@ const FeedbackTrendChart: React.FC<FeedbackTrendChartProps> = ({
   
   // Format the data to ensure dates are displayed correctly
   const formattedData = [...data]
+    .filter(item => item && item.date) // Filter out invalid entries
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    .map(item => ({
-      ...item,
-      // Format date for display
-      formattedDate: new Date(item.date).toLocaleDateString('en-US', {
+    .map(item => {
+      const dateObj = new Date(item.date);
+      // Include year in display to avoid confusion
+      const formattedDate = dateObj.toLocaleDateString('en-US', {
         month: 'short',
-        day: 'numeric'
-      }),
-      // Make sure all sentiment values exist (even if 0)
-      happy: typeof item.happy === 'number' ? Number(item.happy) : 0,
-      neutral: typeof item.neutral === 'number' ? Number(item.neutral) : 0,
-      sad: typeof item.sad === 'number' ? Number(item.sad) : 0
-    }));
+        day: 'numeric',
+        year: 'numeric'
+      });
+      
+      return {
+        ...item,
+        formattedDate,
+        // Make sure all sentiment values exist (even if 0)
+        happy: typeof item.happy === 'number' ? Number(item.happy) : 0,
+        neutral: typeof item.neutral === 'number' ? Number(item.neutral) : 0,
+        sad: typeof item.sad === 'number' ? Number(item.sad) : 0
+      };
+    });
   
   console.log("Trend chart formatted data:", formattedData);
 

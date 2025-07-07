@@ -20,20 +20,11 @@ const SENTIMENT_COLORS = {
 };
 
 export const useFeedbackAnalytics = (initialFilters?: Partial<FeedbackFilters>) => {
-  // Set default date range to include the actual feedback data (July 6, 2025)
+  // Set default date range to last 7 days
   const today = new Date();
-  const actualFeedbackDate = new Date('2025-07-06');
   
-  // If feedback date is in the future relative to "today", use a range that includes the feedback
-  const isDataInFuture = actualFeedbackDate > today;
-  
-  const defaultStartDate = isDataInFuture 
-    ? format(actualFeedbackDate, 'yyyy-MM-dd')
-    : format(subDays(today, 7), 'yyyy-MM-dd');
-  
-  const defaultEndDate = isDataInFuture 
-    ? format(actualFeedbackDate, 'yyyy-MM-dd')
-    : format(today, 'yyyy-MM-dd');
+  const defaultStartDate = format(subDays(today, 7), 'yyyy-MM-dd');
+  const defaultEndDate = format(today, 'yyyy-MM-dd');
   
   const { toast } = useToast();
   
@@ -95,7 +86,7 @@ export const useFeedbackAnalytics = (initialFilters?: Partial<FeedbackFilters>) 
           // Ensure all sentiment properties exist and are numbers
           return {
             date: dateStr,
-            formattedDate: format(date, 'MMM d'),
+            formattedDate: format(date, 'MMM d, yyyy'), // Include year for clarity
             happy: Number(existingData.happy || 0),
             neutral: Number(existingData.neutral || 0),
             sad: Number(existingData.sad || 0),
@@ -107,7 +98,7 @@ export const useFeedbackAnalytics = (initialFilters?: Partial<FeedbackFilters>) 
         // Return default structure with zeros for new date entries
         return { 
           date: dateStr, 
-          formattedDate: format(date, 'MMM d'),
+          formattedDate: format(date, 'MMM d, yyyy'), // Include year for clarity
           happy: 0, 
           neutral: 0, 
           sad: 0, 

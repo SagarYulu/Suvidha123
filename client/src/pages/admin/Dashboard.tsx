@@ -1,5 +1,4 @@
 import React from "react";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AdminLayout from "@/components/AdminLayout";
 import FilterBar from "@/components/dashboard/FilterBar";
 import DashboardMetrics from "@/components/dashboard/DashboardMetrics";
@@ -9,18 +8,7 @@ import DashboardLoader from "@/components/dashboard/DashboardLoader";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { formatConsistentIssueData } from "@/services/issues/issueProcessingService";
 
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: 1,
-    },
-  },
-});
-
-// Separate the inner component to use hooks
-const DashboardContent = () => {
+const Dashboard = () => {
   const { 
     analytics,
     recentIssues,
@@ -69,15 +57,6 @@ const DashboardContent = () => {
         </div>
       )}
     </AdminLayout>
-  );
-};
-
-// Main Dashboard component wrapped with QueryClientProvider
-const Dashboard = () => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <DashboardContent />
-    </QueryClientProvider>
   );
 };
 
