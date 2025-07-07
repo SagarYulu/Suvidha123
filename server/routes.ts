@@ -13,7 +13,7 @@ import { authenticateToken, requireDashboardUser, requireEmployee, requirePermis
 import { businessHoursAnalytics } from "./businessHoursAnalytics";
 import { GOVERNMENT_HOLIDAYS_2025 } from "../shared/holidays";
 
-const JWT_SECRET = process.env.JWT_SECRET || "FS_Grievance_Management_JWT_Secret_Key_2025_Yulu_Secure_Auth_Token";
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key-here";
 
 // Helper function to validate password (handles both bcrypt and plaintext)
 async function validatePassword(inputPassword: string, storedPassword: string): Promise<boolean> {
@@ -45,12 +45,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (isValidPassword) {
           const token = jwt.sign(
             { 
-              id: employee.id, 
+              userId: employee.id, 
               userType: 'employee',
-              email: employee.email,
-              role: employee.role
+              email: employee.email 
             },
-            JWT_SECRET,
+            process.env.JWT_SECRET || 'your-secret-key',
             { expiresIn: '24h' }
           );
           
@@ -79,12 +78,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (isValidPassword) {
           const token = jwt.sign(
             { 
-              id: dashboardUser.id, 
+              userId: dashboardUser.id, 
               userType: 'dashboard_user',
-              email: dashboardUser.email,
-              role: dashboardUser.role
+              email: dashboardUser.email 
             },
-            JWT_SECRET,
+            process.env.JWT_SECRET || 'your-secret-key',
             { expiresIn: '24h' }
           );
           
@@ -122,12 +120,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (employee && employee.empId === employeeId) {
         const token = jwt.sign(
           { 
-            id: employee.id, 
+            userId: employee.id, 
             userType: 'employee',
-            email: employee.email,
-            role: employee.role || 'Employee'
+            email: employee.email 
           },
-          JWT_SECRET,
+          process.env.JWT_SECRET || 'your-secret-key',
           { expiresIn: '24h' }
         );
         
