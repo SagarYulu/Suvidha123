@@ -122,11 +122,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (employee && employee.empId === employeeId) {
         const token = jwt.sign(
           { 
-            userId: employee.id, 
+            id: employee.id, 
             userType: 'employee',
-            email: employee.email 
+            email: employee.email,
+            role: employee.role || 'Employee'
           },
-          process.env.JWT_SECRET || 'your-secret-key',
+          JWT_SECRET,
           { expiresIn: '24h' }
         );
         

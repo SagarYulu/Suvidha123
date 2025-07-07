@@ -20,13 +20,22 @@ export const authenticateToken = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    const authHeader = req.headers.authorization;
+    console.log('Auth header received:', authHeader);
+    
+    const token = authHeader?.replace('Bearer ', '');
     
     if (!token) {
+      console.log('No token found in request');
       return res.status(401).json({ error: 'Access token required' });
     }
 
+    console.log('JWT_SECRET being used for verification:', JWT_SECRET);
+    console.log('Token being verified:', token.substring(0, 20) + '...');
+    
     const decoded = jwt.verify(token, JWT_SECRET) as any;
+    console.log('Token decoded successfully:', decoded);
+    
     req.user = {
       id: decoded.id,
       email: decoded.email,
@@ -35,8 +44,9 @@ export const authenticateToken = async (
     };
 
     next();
-  } catch (error) {
-    console.error('Auth middleware error:', error);
+  } catch (error: any) {
+    console.error('Auth middleware error:', error.message);
+    console.error('JWT verification failed - secret used:', JWT_SECRET);
     return res.status(403).json({ error: 'Invalid or expired token' });
   }
 };
