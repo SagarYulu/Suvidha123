@@ -121,6 +121,14 @@ This is a full-stack web application for managing employee issues and feedback i
 
 ## Changelog
 
+- July 08, 2025. Critical JWT Authentication Fix:
+  - **FIXED JWT SECRET MISMATCH**: Resolved critical authentication failure affecting all protected endpoints
+  - **ROOT CAUSE**: Token generation used 'your-secret-key' while verification used 'your-secret-key-here'
+  - **SOLUTION**: Unified all JWT operations to use consistent JWT_SECRET environment variable
+  - **IMPACT**: All API endpoints now working correctly with proper authentication
+  - **VERIFIED WORKING**: Admin login, mobile verification, all protected endpoints functioning properly
+  - Created comprehensive endpoint testing script (test-all-endpoints.sh) for future debugging
+
 - July 08, 2025. Directory Structure Unification:
   - **REMOVED DUPLICATE FRONTEND DIRECTORY**: Eliminated confusion by removing duplicate frontend folder
   - **UNIFIED CLIENT STRUCTURE**: Standardized on using 'client/' directory following React/Node.js conventions

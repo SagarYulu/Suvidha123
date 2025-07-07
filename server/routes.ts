@@ -50,7 +50,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               email: employee.email,
               role: employee.role
             },
-            process.env.JWT_SECRET || 'your-secret-key',
+            JWT_SECRET,
             { expiresIn: '24h' }
           );
           
@@ -84,7 +84,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               email: dashboardUser.email,
               role: dashboardUser.role
             },
-            process.env.JWT_SECRET || 'your-secret-key',
+            JWT_SECRET,
             { expiresIn: '24h' }
           );
           
@@ -127,7 +127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             email: employee.email,
             role: employee.role
           },
-          process.env.JWT_SECRET || 'your-secret-key',
+          JWT_SECRET,
           { expiresIn: '24h' }
         );
         
