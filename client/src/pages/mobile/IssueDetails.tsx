@@ -36,7 +36,7 @@ const MobileIssueDetails = () => {
   }
 
   const isClosedOrResolved = issue.status === "closed" || issue.status === "resolved";
-  const bgColor = isClosedOrResolved ? "bg-gray-500" : "bg-[#1E40AF]"; // Using deep/royal blue color
+  const bgColor = isClosedOrResolved ? "bg-gray-500" : "bg-[#075e54]"; // WhatsApp green color
 
   return (
     <MobileLayout 
