@@ -1,8 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
-import { pool } from "./db";
-import { seedDatabase } from "./seedData";
+import { storage } from "./services/storage";
+import { pool } from "./config/db";
+import { seedDatabase } from "./utils/seedData";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { 
@@ -10,7 +10,7 @@ import {
   insertIssueCommentSchema, insertTicketFeedbackSchema, insertHolidaySchema 
 } from "@shared/schema";
 import { authenticateToken, requireDashboardUser, requireEmployee, requirePermission } from "./middleware/auth";
-import { businessHoursAnalytics } from "./businessHoursAnalytics";
+import { businessHoursAnalytics } from "./utils/businessHoursAnalytics";
 import { GOVERNMENT_HOLIDAYS_2025 } from "../shared/holidays";
 import { JWT_SECRET } from "./config/jwt";
 

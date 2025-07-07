@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { storage } from '../storage';
+import { storage } from '../services/storage';
 import { JWT_SECRET } from '../config/jwt';
 
 export interface AuthRequest extends Request {

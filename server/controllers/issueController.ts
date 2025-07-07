@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { issueModel } from '../models/Issue';
 import { insertIssueSchema } from '@shared/schema';
-import { storage } from '../storage';
+import { storage } from '../services/storage';
 
 export class IssueController {
   /**

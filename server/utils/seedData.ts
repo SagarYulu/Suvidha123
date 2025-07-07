@@ -1,4 +1,4 @@
-import { storage } from "./storage";
+import { storage } from "../services/storage";
 
 export async function seedDatabase() {
   try {

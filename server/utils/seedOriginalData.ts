@@ -1,4 +1,4 @@
-import { storage } from "./storage";
+import { storage } from "../services/storage";
 import bcrypt from "bcryptjs";
 
 export async function seedOriginalSupabaseData() {

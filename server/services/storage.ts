@@ -1,4 +1,4 @@
-import { db } from "./db";
+import { db } from "../config/db";
 import { eq, and, desc, or, like, sql, inArray } from "drizzle-orm";
 import { getCurrentISTTime } from "./utils/timezone";
 import { 

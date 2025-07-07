@@ -4,7 +4,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { storage } from '../storage';
+import { storage } from '../services/storage';
 
 // Extend the Request interface to include user permissions
 declare global {

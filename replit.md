@@ -15,11 +15,18 @@ This is a full-stack web application for managing employee issues and feedback i
 - **React Context API** for state management
 
 ### Backend Architecture
-- **Express.js** server with JavaScript following MVC pattern
-- **MySQL** database with mysql2 driver
+- **Express.js** server with TypeScript following MVC pattern
+- **PostgreSQL** database with Drizzle ORM  
 - **JWT-based authentication** with secure token management
-- **RESTful API design** with `/api/v1` prefix
-- **Modular controller and route structure**
+- **RESTful API design** with `/api` prefix
+- **Proper MVC structure** with organized folders:
+  - `models/` - Data models and database entities
+  - `controllers/` - Business logic and request handling
+  - `routes/` - API endpoint definitions
+  - `services/` - Reusable service layer (storage, websocket)
+  - `middleware/` - Authentication, RBAC, filtering
+  - `config/` - Database, JWT, and server configuration
+  - `utils/` - Helper functions and utilities
 
 ### Database Design  
 - **PostgreSQL** with Drizzle ORM and AUTO_INCREMENT integer IDs
@@ -120,6 +127,15 @@ This is a full-stack web application for managing employee issues and feedback i
 - CORS configuration for API endpoints
 
 ## Changelog
+
+- July 08, 2025. Complete MVC Architecture Refactoring:
+  - **RESTRUCTURED BACKEND**: Organized server code into proper MVC folders
+  - **CREATED FOLDER STRUCTURE**: models/, controllers/, routes/, services/, middleware/, config/, utils/
+  - **MOVED FILES**: Relocated files to appropriate folders based on their purpose
+  - **UPDATED IMPORTS**: Fixed all import paths after reorganization
+  - **BENEFITS**: Better code organization, maintainability, and scalability
+  - **DOCUMENTATION**: Created comprehensive MVC_STRUCTURE.md explaining the new architecture
+  - Application continues to work normally with improved code organization
 
 - July 08, 2025. Dashboard Crash Fix and JWT Authentication Resolution:
   - **FIXED DASHBOARD CRASH**: Resolved prop name mismatch causing RecentTicketsTable to crash
