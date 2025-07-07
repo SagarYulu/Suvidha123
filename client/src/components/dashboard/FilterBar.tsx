@@ -26,6 +26,7 @@ const FilterBar = memo(({ onFilterChange, initialFilters }: FilterBarProps) => {
   
   // Sync component state with parent component filters
   useEffect(() => {
+    console.log("FilterBar useEffect - initialFilters:", initialFilters);
     if (initialFilters) {
       console.log("Updating FilterBar state with initialFilters:", initialFilters);
       setCity(initialFilters.city);
@@ -87,9 +88,14 @@ const FilterBar = memo(({ onFilterChange, initialFilters }: FilterBarProps) => {
   // IMPORTANT: To fix the UI display of selected filters
   // Get the appropriate select value to display, handling null values properly
   const getSelectValue = (value: string | null): string => {
-    return value || "all";
+    const result = value || "all";
+    console.log("getSelectValue called with:", value, "returning:", result);
+    return result;
   };
 
+  console.log("FilterBar render - current state:", { city, cluster, issueType });
+  console.log("City select value:", getSelectValue(city));
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 border rounded-md bg-background">
       <div>
