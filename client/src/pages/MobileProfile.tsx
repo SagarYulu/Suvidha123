@@ -9,17 +9,20 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
 interface UserProfile {
-  id: string;
+  id: number;
   name: string;
   email: string;
   phone?: string;
-  emp_id: string;
+  empId: string;
   role: string;
   city?: string;
   cluster?: string;
-  date_of_joining?: string;
-  date_of_birth?: string;
+  dateOfJoining?: string;
+  dateOfBirth?: string;
   manager?: string;
+  bloodGroup?: string;
+  accountNumber?: string;
+  ifscCode?: string;
 }
 
 const MobileProfile: React.FC = () => {
@@ -37,7 +40,7 @@ const MobileProfile: React.FC = () => {
   const fetchProfile = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/mobile/profile', {
+      const response = await fetch('/api/employee/profile', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }
@@ -61,7 +64,7 @@ const MobileProfile: React.FC = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const response = await fetch('/api/mobile/profile', {
+      const response = await fetch('/api/employee/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -215,7 +218,7 @@ const MobileProfile: React.FC = () => {
 
               <div>
                 <label className="text-sm font-medium text-gray-700">Employee ID</label>
-                <p className="mt-1 text-gray-900 font-mono">{profile.emp_id}</p>
+                <p className="mt-1 text-gray-900 font-mono">{profile.empId}</p>
               </div>
 
               <div>
@@ -302,7 +305,7 @@ const MobileProfile: React.FC = () => {
 
             <div>
               <label className="text-sm font-medium text-gray-700">Date of Joining</label>
-              <p className="mt-1 text-gray-900">{formatDate(profile.date_of_joining)}</p>
+              <p className="mt-1 text-gray-900">{formatDate(profile.dateOfJoining)}</p>
             </div>
           </CardContent>
         </Card>
