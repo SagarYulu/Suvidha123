@@ -17,6 +17,7 @@ const DashboardMetrics = memo(({ analytics, userCount, isLoading }: DashboardMet
   useEffect(() => {
     const loadBusinessMetrics = async () => {
       const metrics = await fetchBusinessMetrics();
+      console.log('Business metrics loaded:', metrics);
       setBusinessMetrics(metrics);
     };
     
