@@ -128,6 +128,16 @@ This is a full-stack web application for managing employee issues and feedback i
 
 ## Changelog
 
+- July 08, 2025. Major MVC Architecture Cleanup - Removed 1800+ Lines of Duplicate Code:
+  - **FIXED CRITICAL ISSUE**: routes.ts was 1931 lines with all business logic duplicated instead of using MVC controllers
+  - **REDUCED routes.ts**: From 1931 lines to just 108 lines - now only mounts modular routes and WebSocket setup
+  - **CREATED MISSING CONTROLLERS**: rbacController, dashboardUserController, slaController for proper business logic separation
+  - **CREATED MISSING ROUTES**: rbacRoutes, dashboardUserRoutes, slaRoutes following clean REST patterns
+  - **PRESERVED FUNCTIONALITY**: All endpoints working exactly as before, just properly organized
+  - **MVC COMPLIANCE**: Routes now only define endpoints and delegate to controllers (Single Responsibility Principle)
+  - **REMOVED DUPLICATION**: Eliminated duplicate auth, employee, issue logic that violated DRY principle
+  - Architecture now follows industry-standard MVC patterns with proper separation of concerns
+
 - January 08, 2025. Comprehensive Documentation Package Created:
   - **CREATED BRD**: Business Requirements Document detailing all features, user journeys, and business logic
   - **CREATED PRD**: Product Requirements Document with technical specifications and implementation details  
