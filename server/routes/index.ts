@@ -8,6 +8,7 @@ import analyticsRoutes from './analyticsRoutes';
 import { rbacRoutes } from './rbacRoutes';
 import { dashboardUserRoutes } from './dashboardUserRoutes';
 import { slaRoutes } from './slaRoutes';
+import { feedbackRoutes } from './feedbackRoutes';
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.use('/analytics', analyticsRoutes);
 router.use('/rbac', rbacRoutes);
 router.use('/dashboard-users', dashboardUserRoutes);
 router.use('/sla', slaRoutes);
+router.use('/', feedbackRoutes); // Feedback routes are at root level for /ticket-feedback
 
 // Health check
 router.get('/health', (req, res) => {

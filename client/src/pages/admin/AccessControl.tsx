@@ -96,6 +96,12 @@ const AccessControl = () => {
       // Check each user's role
       const adminIds = new Set<string>();
       for (const user of users || []) {
+        // Skip if user has no ID
+        if (!user.id) {
+          console.warn(`User ${user.name} has no ID, skipping role check`);
+          continue;
+        }
+        
         // Use the integer ID directly 
         const idToCheck = user.id;
         

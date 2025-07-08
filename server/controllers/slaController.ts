@@ -1,7 +1,26 @@
 import { Request, Response } from 'express';
 import { storage } from '../services/storage';
-import { calculateBusinessHours } from '../utils/businessHoursCalculator';
-import { SLA_CONFIG } from '../utils/slaConfig';
+import { businessHoursCalculator } from '@shared/holidays';
+
+// SLA configuration
+const SLA_CONFIG = {
+  CRITICAL: {
+    responseTimeHours: 1,
+    resolutionTimeHours: 4
+  },
+  HIGH: {
+    responseTimeHours: 2,
+    resolutionTimeHours: 8
+  },
+  MEDIUM: {
+    responseTimeHours: 4,
+    resolutionTimeHours: 24
+  },
+  LOW: {
+    responseTimeHours: 8,
+    resolutionTimeHours: 48
+  }
+};
 
 export class SLAController {
   // Get SLA metrics
@@ -53,7 +72,7 @@ export class SLAController {
       for (const issue of openIssues) {
         const slaTarget = SLA_CONFIG[issue.priority]?.resolutionTime || 48;
         const createdAt = new Date(issue.createdAt);
-        const elapsedHours = calculateBusinessHours(createdAt, now);
+        const elapsedHours = businessHoursCalculator.calculateBusinessHours(createdAt, now);
         const timeRemaining = slaTarget - elapsedHours;
         
         if (timeRemaining <= threshold && timeRemaining > 0) {
@@ -106,7 +125,7 @@ export class SLAController {
         const slaTarget = SLA_CONFIG[issue.priority]?.resolutionTime || 48;
         const createdAt = new Date(issue.createdAt);
         const resolvedAt = issue.resolvedAt ? new Date(issue.resolvedAt) : new Date();
-        const actualHours = calculateBusinessHours(createdAt, resolvedAt);
+        const actualHours = businessHoursCalculator.calculateBusinessHours(createdAt, resolvedAt);
         
         return {
           issueId: issue.id,
