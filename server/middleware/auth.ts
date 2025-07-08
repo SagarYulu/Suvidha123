@@ -21,11 +21,21 @@ export const authenticateToken = async (
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
     
+    console.log('Auth middleware - Token present:', !!token);
+    console.log('Auth middleware - Request URL:', req.url);
+    
     if (!token) {
       return res.status(401).json({ error: 'Access token required' });
     }
 
     const decoded = jwt.verify(token, JWT_SECRET) as any;
+    console.log('Auth middleware - Decoded token:', {
+      id: decoded.id,
+      email: decoded.email,
+      userType: decoded.userType,
+      role: decoded.role
+    });
+    
     req.user = {
       id: decoded.id,
       email: decoded.email,
@@ -36,6 +46,7 @@ export const authenticateToken = async (
     next();
   } catch (error) {
     console.error('Auth middleware error:', error);
+    console.error('Auth middleware - JWT_SECRET:', JWT_SECRET ? 'Present' : 'Missing');
     return res.status(403).json({ error: 'Invalid or expired token' });
   }
 };

@@ -48,7 +48,7 @@ const MobileIssues = () => {
         
         // Look for employee by matching the ID from authentication
         // Use employee profile endpoint instead of getEmployees
-        const response = await fetch('/api/employee/profile', {
+        const response = await fetch('/api/employees/profile', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
             'Content-Type': 'application/json'

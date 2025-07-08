@@ -15,6 +15,7 @@ const router = Router();
 // Mount routes
 router.use('/auth', authRoutes);
 router.use('/employees', employeeRoutes);
+router.use('/employee', employeeRoutes); // Add singular route for mobile app compatibility
 router.use('/issues', issueRoutes);
 router.use('/holidays', holidayRoutes);
 router.use('/master-data', masterDataRoutes);

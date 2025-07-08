@@ -40,7 +40,7 @@ const MobileProfile: React.FC = () => {
   const fetchProfile = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/employee/profile', {
+      const response = await fetch('/api/employees/profile', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
         }

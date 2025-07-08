@@ -139,7 +139,25 @@ export class EmployeeController {
         return res.status(404).json({ error: 'Employee not found' });
       }
       
-      return res.json(employee);
+      // Transform to camelCase for frontend compatibility
+      const profileData = {
+        id: employee.id,
+        name: employee.name,
+        email: employee.email,
+        phone: employee.phone,
+        empId: employee.empId,
+        role: employee.role,
+        city: employee.city,
+        cluster: employee.cluster,
+        dateOfJoining: employee.dateOfJoining,
+        dateOfBirth: employee.dateOfBirth,
+        manager: employee.manager,
+        bloodGroup: employee.bloodGroup,
+        accountNumber: employee.accountNumber,
+        ifscCode: employee.ifscCode
+      };
+      
+      return res.json(profileData);
     } catch (error) {
       console.error('Error fetching profile:', error);
       return res.status(500).json({ error: 'Failed to fetch profile' });
