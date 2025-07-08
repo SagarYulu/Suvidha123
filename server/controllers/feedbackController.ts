@@ -13,7 +13,8 @@ export class FeedbackController {
         return;
       }
       
-      const feedback = await storage.getFeedbackByIssueId(parseInt(issueId as string));
+      const feedbacks = await storage.getTicketFeedback(parseInt(issueId as string));
+      const feedback = feedbacks && feedbacks.length > 0 ? feedbacks[0] : null;
       
       if (employeeId && feedback) {
         // Check if this specific employee has provided feedback
@@ -36,7 +37,7 @@ export class FeedbackController {
         return this.getFeedbackByIssue(req, res);
       }
       
-      const feedback = await storage.getAllFeedback();
+      const feedback = await storage.getTicketFeedback();
       res.json(feedback);
     } catch (error) {
       console.error("Error fetching all feedback:", error);
@@ -56,8 +57,8 @@ export class FeedbackController {
       
       const feedbacks = await Promise.all(
         issueIds.map(async (issueId) => {
-          const feedback = await storage.getFeedbackByIssueId(parseInt(issueId));
-          return feedback ? { issueId, hasFeedback: true } : null;
+          const feedbacks = await storage.getTicketFeedback(parseInt(issueId));
+          return feedbacks && feedbacks.length > 0 ? { issueId, hasFeedback: true } : null;
         })
       );
       
@@ -85,8 +86,8 @@ export class FeedbackController {
       };
       
       // Check if feedback already exists
-      const existingFeedback = await storage.getFeedbackByIssueId(feedbackData.issueId);
-      if (existingFeedback) {
+      const existingFeedbacks = await storage.getTicketFeedback(feedbackData.issueId);
+      if (existingFeedbacks && existingFeedbacks.length > 0) {
         res.status(409).json({ error: "Feedback already exists for this ticket" });
         return;
       }
@@ -94,7 +95,7 @@ export class FeedbackController {
       // Validate the data
       const validatedData = insertTicketFeedbackSchema.parse(feedbackData);
       
-      const feedback = await storage.createFeedback(validatedData);
+      const feedback = await storage.createTicketFeedback(validatedData);
       res.status(201).json(feedback);
     } catch (error) {
       console.error("Error submitting feedback:", error);
@@ -108,7 +109,7 @@ export class FeedbackController {
       const { startDate, endDate, agentId, sentiment } = req.query;
       
       // Get all feedback
-      let allFeedback = await storage.getAllFeedback();
+      let allFeedback = await storage.getTicketFeedback();
       
       // Apply filters
       if (startDate || endDate) {
