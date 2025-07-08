@@ -70,9 +70,20 @@ router.get('/business-metrics', authMiddleware, rbacMiddleware(['view:dashboard'
     // Get issues with filters
     const issuesData = await db.select().from(issues).where(and(...filters));
     
+    // Log issues data for debugging
+    console.log('Issues data for business metrics:', issuesData.map(i => ({
+      id: i.id,
+      status: i.status,
+      createdAt: i.createdAt,
+      resolvedAt: i.resolvedAt,
+      firstResponseAt: i.firstResponseAt
+    })));
+    
     // Use BusinessHoursAnalytics to calculate metrics
     const analytics = new BusinessHoursAnalytics();
     const metrics = analytics.calculateMetrics(issuesData);
+    
+    console.log('Calculated metrics:', metrics);
     
     // Count resolved and responded issues
     const resolvedCount = issuesData.filter(i => 
