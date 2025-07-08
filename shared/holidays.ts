@@ -71,8 +71,16 @@ export class BusinessHoursCalculator {
   calculateBusinessHours(startDate: Date, endDate: Date): number {
     if (startDate >= endDate) return 0;
 
+    // If start date is on a non-working day, move to next working day at 9 AM
+    let effectiveStartDate = new Date(startDate);
+    if (!this.isWorkingDay(effectiveStartDate)) {
+      effectiveStartDate = this.getNextWorkingDay(effectiveStartDate);
+      const [startHour, startMin] = this.workingHours.startTime.split(':').map(Number);
+      effectiveStartDate.setHours(startHour, startMin, 0, 0);
+    }
+
     let totalHours = 0;
-    const current = new Date(startDate);
+    const current = new Date(effectiveStartDate);
     const end = new Date(endDate);
 
     while (current < end) {
