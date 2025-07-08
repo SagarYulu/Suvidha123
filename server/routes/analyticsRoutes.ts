@@ -70,6 +70,9 @@ router.get('/business-metrics', authMiddleware, rbacMiddleware(['view:dashboard'
     // Get issues with filters
     const issuesData = await db.select().from(issues).where(and(...filters));
     
+    // Log raw data to debug field names
+    console.log('Raw issue data sample:', issuesData[0]);
+    
     // Log issues data for debugging
     console.log('Issues data for business metrics:', issuesData.map(i => ({
       id: i.id,
@@ -85,7 +88,7 @@ router.get('/business-metrics', authMiddleware, rbacMiddleware(['view:dashboard'
     
     console.log('Calculated metrics:', metrics);
     
-    // Count resolved and responded issues
+    // Count resolved and responded issues  
     const resolvedCount = issuesData.filter(i => 
       i.status === 'resolved' || i.status === 'closed'
     ).length;
