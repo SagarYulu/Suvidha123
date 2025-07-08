@@ -4,6 +4,7 @@ import { rbacMiddleware } from '../middleware/rbac';
 import { db } from '../config/db';
 import { issues, employees, dashboardUsers, ticketFeedback } from '@shared/schema';
 import { eq, sql, and, gte, lte } from 'drizzle-orm';
+import { BusinessHoursAnalytics } from '../utils/businessHoursAnalytics';
 
 const router = Router();
 
@@ -53,6 +54,52 @@ router.get('/dashboard', authMiddleware, rbacMiddleware(['view:dashboard']), asy
   } catch (error) {
     console.error('Error fetching dashboard analytics:', error);
     res.status(500).json({ error: 'Failed to fetch dashboard analytics' });
+  }
+});
+
+// Business metrics (average resolution time, first response time)
+router.get('/business-metrics', authMiddleware, rbacMiddleware(['view:dashboard']), async (req, res) => {
+  try {
+    const { startDate, endDate, city, cluster } = req.query;
+    
+    // Build filters
+    const filters = [];
+    if (startDate) filters.push(gte(issues.createdAt, new Date(startDate as string)));
+    if (endDate) filters.push(lte(issues.createdAt, new Date(endDate as string)));
+    
+    // Get issues with filters
+    const issuesData = await db.select().from(issues).where(and(...filters));
+    
+    // Use BusinessHoursAnalytics to calculate metrics
+    const analytics = new BusinessHoursAnalytics();
+    const metrics = analytics.calculateMetrics(issuesData);
+    
+    // Count resolved and responded issues
+    const resolvedCount = issuesData.filter(i => 
+      i.status === 'resolved' || i.status === 'closed'
+    ).length;
+    
+    const respondedCount = issuesData.filter(i => i.firstResponseAt).length;
+    
+    // Format time to hours
+    const formatHours = (hours: number): string => {
+      if (hours === 0) return '0 hrs';
+      if (hours < 1) return `${Math.round(hours * 60)} mins`;
+      return `${hours.toFixed(1)} hrs`;
+    };
+    
+    res.json({
+      avgResolutionTime: metrics.avgResolutionTime,
+      avgFirstResponseTime: metrics.avgFirstResponseTime,
+      avgResolutionTimeFormatted: formatHours(metrics.avgResolutionTime),
+      avgFirstResponseTimeFormatted: formatHours(metrics.avgFirstResponseTime),
+      resolvedCount,
+      respondedCount,
+      totalIssues: issuesData.length
+    });
+  } catch (error) {
+    console.error('Error fetching business metrics:', error);
+    res.status(500).json({ error: 'Failed to fetch business metrics' });
   }
 });
 

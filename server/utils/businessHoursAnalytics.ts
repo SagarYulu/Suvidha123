@@ -1,8 +1,8 @@
 // Business Hours Analytics Service
 // Handles SLA, TAT, and response time calculations based on Indian business hours
 
-import { BusinessHoursCalculator, GOVERNMENT_HOLIDAYS_2025 } from '../shared/holidays';
-import { Issue } from '../shared/schema';
+import { BusinessHoursCalculator, GOVERNMENT_HOLIDAYS_2025 } from '@shared/holidays';
+import { Issue } from '@shared/schema';
 
 export interface BusinessHoursMetrics {
   avgResolutionTime: number; // in business hours
